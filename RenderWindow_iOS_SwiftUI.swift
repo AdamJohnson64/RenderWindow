@@ -38,7 +38,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, UIApplicationDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         window?.rootViewController = UIViewControllerImpl()
-        window?.backgroundColor = UIColor.blue
         window?.makeKeyAndVisible()
     }
 }

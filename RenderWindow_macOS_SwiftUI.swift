@@ -19,11 +19,13 @@ class MTKViewDelegateImpl: NSObject, MTKViewDelegate {
 struct NSViewReoresentableImpl: NSViewRepresentable {
     var mtkview = MTKView()
     var renderer = MTKViewDelegateImpl()
-    func makeNSView(context: Context) -> NSView {
+    init() {
         mtkview.delegate = renderer
         mtkview.device = MTLCreateSystemDefaultDevice()
         mtkview.isPaused = false
         mtkview.preferredFramesPerSecond = 1
+    }
+    func makeNSView(context: Context) -> NSView {
         return mtkview
     }
     func updateNSView(_ nsView: NSView, context: Context) {
@@ -33,7 +35,7 @@ struct NSViewReoresentableImpl: NSViewRepresentable {
 @main
 struct AppImpl: App {
     var body: some Scene {
-        WindowGroup {
+        Window("RenderWindow", id:"RenderWindow") {
             NSViewReoresentableImpl()
         }
     }
