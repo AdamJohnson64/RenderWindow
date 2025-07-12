@@ -1,0 +1,22 @@
+<html>
+<body>
+  <canvas id="gl-canvas" width="640" height="480">
+    Your browser does not support the HTML5 canvas element.
+  </canvas>
+  <script>
+const canvas = document.querySelector("#gl-canvas");
+const gl = canvas.getContext("webgl");
+if (gl === null) {
+	alert("WebGL Unavailable.");
+	throw new Error();
+}
+
+function render() {
+  gl.clearColor(Math.random(), Math.random(), Math.random(), 1.0);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+}
+
+setInterval(render, 1000);
+  </script>
+</body>
+</html>
