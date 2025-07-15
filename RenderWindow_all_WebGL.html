@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <body>
   <canvas id="gl-canvas" width="640" height="480">
@@ -11,9 +12,179 @@ if (gl === null) {
 	throw new Error();
 }
 
+function compileShader(type, code, name) {
+  const id_shader = gl.createShader(type);
+  gl.shaderSource(id_shader, code);
+  gl.compileShader(id_shader);
+  if (!gl.getShaderParameter(id_shader, gl.COMPILE_STATUS)) {
+    const error = name +" Shader Compiler Error: " + gl.getShaderInfoLog(id_shader)
+    gl.deleteShader(id_shader);
+    throw new Error(error);
+  }
+  return id_shader;
+}
+
+function compileProgram(code_vertex, code_fragment) {
+  const id_program = gl.createProgram();
+  const id_shader_vertex = compileShader(gl.VERTEX_SHADER, code_vertex, "Vertex");
+  const id_shader_fragment = compileShader(gl.FRAGMENT_SHADER, code_fragment, "Fraggment");
+  gl.attachShader(id_program, id_shader_vertex);
+  gl.attachShader(id_program, id_shader_fragment);
+  gl.linkProgram(id_program);
+  return id_program;
+}
+
+function createParametricVector3(func, in_u, in_v) {
+  const steps_u = in_u + 1;
+  const steps_v = in_v + 1;
+  const vec = new Float32Array(3 * steps_u * steps_v);
+  for (let v = 0; v < steps_v; ++v) {
+    for (let u = 0; u < steps_u; ++u) {
+      const base = 3 * (u + v * steps_u);
+      const point = func(u / in_u, v / in_v);
+      vec[base + 0] = point[0];
+      vec[base + 1] = point[1];
+      vec[base + 2] = point[2];
+    }
+  }
+  const id = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, id);
+  gl.bufferData(gl.ARRAY_BUFFER, vec, gl.STATIC_DRAW);
+  return id;
+}
+
+function createaParametricIndices(func, in_u, in_v) {
+  const steps_u = in_u + 1;
+  const steps_v = in_v + 1;
+  const vec = new Int16Array(2 * 3 * in_u * in_v);
+  for (let v = 0; v < in_v; ++v) {
+    for (let u = 0; u < in_u; ++u) {
+      const base = 2 * 3 * (u + v * in_u);
+      vec[base + 0] = (u + 0) + (v + 0) * steps_u;
+      vec[base + 1] = (u + 1) + (v + 0) * steps_u;
+      vec[base + 2] = (u + 0) + (v + 1) * steps_u;
+      vec[base + 3] = (u + 1) + (v + 0) * steps_u;
+      vec[base + 4] = (u + 0) + (v + 1) * steps_u;
+      vec[base + 5] = (u + 1) + (v + 1) * steps_u;
+    }
+  }
+  const id = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, id);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, vec, gl.STATIC_DRAW);
+  return id;
+}
+
+function vector3String(v) {
+  return "[" + v[0].toFixed(2) + ", " + v[1].toFixed(2) + ", " + v[2].toFixed(2) + "]";
+}
+
+function vector3Add(a, b) {
+  return [a[0] + b[0],
+          a[1] + b[1],
+          a[2] + b[2]];
+}
+
+function vector3Cross(a, b) {
+  return [a[1] * b[2] - a[2] * b[1],
+          a[2] * b[0] - a[0] * b[2],
+          a[0] * b[1] - a[1] * b[0]];
+}
+
+function vector3Dot(a, b) {
+  return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+}
+
+function vector3Mul(a, s) {
+  return [a[0] * s,
+          a[1] * s,
+          a[2] * s];
+}
+
+function vector3Normalize(a) {
+  const inv_mag = 1.0 / Math.sqrt(vector3Dot(a, a));
+  return vector3Mul(a, inv_mag);
+}
+
+function vector3Sub(a, b) {
+  return [a[0] - b[0],
+          a[1] - b[1],
+          a[2] - b[2]];
+}
+
+function computeNormal(func, u, v) {
+  const du = vector3Sub(func(u - 0.01, v), func(u + 0.01, v));
+  const dv = vector3Sub(func(u, v - 0.01), func(u, v + 0.01));
+
+  const t = vector3Normalize(vector3Cross(du, dv));
+  if (t[0] > 0.99 && t[1] > 0.99 && t[2] < 0.99) throw new Error("Oops");
+  return t;
+};
+
+function createParametric(func, u, v) {
+  const norm = function(u2, v2) {
+    return computeNormal(func, u2, v2);
+  }
+  return {
+    id_vertex: createParametricVector3(func, u, v),
+    id_normal: createParametricVector3(norm, u, v),
+    id_index: createaParametricIndices(func, u, v),
+    triangle_count: 2 * u * v,
+  };
+}
+
+function renderMesh(parametric) {
+  // Position
+  gl.bindBuffer(gl.ARRAY_BUFFER, parametric.id_vertex);
+  gl.enableVertexAttribArray(0);
+  gl.vertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, 12, 0);
+  // Normal
+  gl.bindBuffer(gl.ARRAY_BUFFER, parametric.id_normal);
+  gl.enableVertexAttribArray(1);
+  gl.vertexAttribPointer(1, 3, gl.FLOAT, gl.FALSE, 12, 0);
+  // Draw
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, parametric.id_index);
+  gl.drawElements(gl.TRIANGLES, 3 * parametric.triangle_count, gl.UNSIGNED_SHORT, 0);
+}
+
+const code_vertex = `#version 100
+attribute vec3 pos;
+attribute vec3 nor;
+varying highp vec3 nor2;
+
+void main(void) {
+  gl_Position = vec4(pos.x, pos.y, pos.z, 1.0);
+  nor2 = nor + vec3(0.5, 0.5, 0.5);
+}
+`;
+
+const code_fragment = `#version 100
+varying highp vec3 nor2;
+
+void main(void) {
+  gl_FragColor = vec4(nor2.x, nor2.y, nor2.z, 1.0);
+}
+`;
+
+const id_program = compileProgram(code_vertex, code_fragment);
+
+function plane(u, v) {
+  return [u, v, 0];
+}
+
+function sphere(u, v) {
+  const angle_u = (2 * Math.PI) * u;
+  const angle_v = (1 * Math.PI) * v;
+  const scale = Math.sin(angle_v);
+  return [scale * Math.cos(angle_u), Math.cos(angle_v), scale * Math.sin(angle_u)];
+}
+
+const parametric = createParametric(sphere, 10, 10);
+
 function render() {
   gl.clearColor(Math.random(), Math.random(), Math.random(), 1.0);
   gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.useProgram(id_program);
+  renderMesh(parametric);
 }
 
 setInterval(render, 1000);
