@@ -40,18 +40,24 @@ void main(void) {
 `;
 
 const id_program = compileProgram(code_vertex, code_fragment);
-
 const parametric = createParametric(sphere, 10, 10);
+var frame = 0
 
 function render() {
-  gl.clearColor(Math.random(), Math.random(), Math.random(), 1.0);
-  gl.clear(gl.COLOR_BUFFER_BIT);
+  //gl.clearColor(Math.random(), Math.random(), Math.random(), 1.0);
+  gl.clearColor(0, 0, 0, 1.0);
+  gl.clearDepth(1.0);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   gl.useProgram(id_program);
-  mat = matTranslate(0.1, 0, 0);
-  flat = matFlatten(mat);
+  gl.enable(gl.DEPTH_TEST);
+  gl.depthFunc(gl.LESS);
+  var projection = matProjection(90, 0.001, 100.0);
+  var view = matLookAt([5 * Math.cos(frame),0,2 * Math.sin(frame)],[0,0,0],[0,1,0])
+  mat = matMultiply(view, projection);
+  frame = frame + 0.1;
   const uniform_mvp = gl.getUniformLocation(id_program, "mvp");
-  gl.uniformMatrix4fv(uniform_mvp, gl.FALSE, flat);
+  gl.uniformMatrix4fv(uniform_mvp, gl.TRUE, matFlatten(mat));
   renderMesh(parametric);
 }
 
-setInterval(render, 1000);
+setInterval(render, 100);

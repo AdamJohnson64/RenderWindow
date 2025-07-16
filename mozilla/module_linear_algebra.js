@@ -41,6 +41,22 @@ function matInvert(m) {
   return r;
 }
 
+function matLookAt(eye, center, up) {
+  z = vector3Sub(center, eye);
+  z = vector3Normalize(z);
+  y = vector3Normalize(up);
+  x = vector3Cross(z, y);
+  y = vector3Cross(vector3Normalize(x), z);
+  ex = -vector3Dot(x, eye);
+  ey = -vector3Dot(y, eye);
+  ez = vector3Dot(z, eye);
+  return[
+    [x[0],  x[1], x[2],  0],
+    [y[0],  y[1], y[2],  0],
+    [-z[0], -z[1],-z[2], 0],
+    [ex,    ey,   ez,     1]];
+}
+
 function matMultiply(m, n) {
   r = matCreate();
   r[0][0] = ((((m[0][0]*n[0][0])+(m[0][1]*n[1][0]))+(m[0][2]*n[2][0]))+(m[0][3]*n[3][0]))
@@ -65,12 +81,35 @@ function matMultiply(m, n) {
 function matProjection(fov, near, far) {
   scale = 1 / (Math.tan((fov / 2) * (Math.PI / 180)));
   m = matCreate();
-  m[0][0] = s;
-  m[1][1] = s;
+  m[0][0] = scale;
+  m[1][1] = scale;
+  m[2][2] = (far + near) / (near - far);
+  m[3][2] = (2 * far * near) / (near - far);
+  m[2][3] = -1;
+  m[3][3] = 0;
+  return m;
+}
+
+function matProjection2(fov, near, far) {
+  scale = 1 / (Math.tan((fov / 2) * (Math.PI / 180)));
+  m = matCreate();
+  m[0][0] = scale;
+  m[1][1] = scale;
   m[2][2] = -far / (far - near);
   m[3][2] = -far * near / (far - near);
   m[2][3] = -1;
   m[3][3] = 0;
+  return m;
+}
+
+function matRotateY(angle) {
+  var c = Math.cos(angle);
+  var s = Math.sin(angle);
+  return [
+    [c,0,s,0],
+    [0,1,0,0],
+    [s,0,c,0],
+    [0,0,0,1]]
 }
 
 function matScale(x, y, z) {
@@ -87,6 +126,16 @@ function matTranslate(x, y, z) {
   m[3][1] = y;
   m[3][2] = z;
   return m;
+}
+
+function matTranspose(m) {
+  r = matCreate();
+  for (var i = 0; i < 4; ++i) {
+    for (var j = 0; j < 4; ++j) {
+      r[j][i] = m[i][j];
+    }
+  }
+  return r;
 }
 
 function vector3String(v) {
@@ -113,6 +162,10 @@ function vector3Mul(a, s) {
   return [a[0] * s,
           a[1] * s,
           a[2] * s];
+}
+
+function vector3Negate(a) {
+  return [-a[0], -a[1], -a[2]];
 }
 
 function vector3Normalize(a) {
