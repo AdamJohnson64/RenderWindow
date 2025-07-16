@@ -13,11 +13,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A457115C2E21B65200997A2B /* RenderWindow_macOS_AppKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = RenderWindow_macOS_AppKit.app; path = /Users/adamjohnson/Desktop/RenderWindow/build/Debug/RenderWindow_macOS_AppKit.app; sourceTree = "<absolute>"; };
-		A457115D2E21B65200997A2B /* RenderWindow_macOS_SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = RenderWindow_macOS_SwiftUI.app; path = /Users/adamjohnson/Desktop/RenderWindow/build/Debug/RenderWindow_macOS_SwiftUI.app; sourceTree = "<absolute>"; };
-		A45711622E21B6AA00997A2B /* RenderWindow_iOS_SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = RenderWindow_iOS_SwiftUI.app; path = "/Users/adamjohnson/Desktop/RenderWindow/build/Debug-iphoneos/RenderWindow_iOS_SwiftUI.app"; sourceTree = "<absolute>"; };
 		A45711682E21B6AA00997A2B /* RenderWindow_iOS_SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderWindow_iOS_SwiftUI.swift; sourceTree = "<group>"; };
 		A45711722E21B6AB00997A2B /* RenderWindow_iOS_SwiftUI.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = RenderWindow_iOS_SwiftUI.plist; sourceTree = "<group>"; };
+		A45D9E262E2725ED00B6F9D5 /* RenderWindow_iOS_SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = RenderWindow_iOS_SwiftUI.app; path = "/Users/adamjohnson/Desktop/RenderWindow/apple/build/Debug-iphoneos/RenderWindow_iOS_SwiftUI.app"; sourceTree = "<absolute>"; };
+		A45D9E272E2725ED00B6F9D5 /* RenderWindow_macOS_AppKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = RenderWindow_macOS_AppKit.app; path = /Users/adamjohnson/Desktop/RenderWindow/apple/build/Debug/RenderWindow_macOS_AppKit.app; sourceTree = "<absolute>"; };
+		A45D9E282E2725ED00B6F9D5 /* RenderWindow_macOS_SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = RenderWindow_macOS_SwiftUI.app; path = /Users/adamjohnson/Desktop/RenderWindow/apple/build/Debug/RenderWindow_macOS_SwiftUI.app; sourceTree = "<absolute>"; };
 		A4ADAC4B2E20BEF1009C84AD /* RenderWindow_macOS_AppKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RenderWindow_macOS_AppKit.m; sourceTree = "<group>"; };
 		A4ADAC4D2E20BEF1009C84AD /* RenderWindow_macOS_AppKit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RenderWindow_macOS_AppKit.entitlements; sourceTree = "<group>"; };
 		A4D42A5F2E20713600B2A12B /* RenderWindow_macOS_SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderWindow_macOS_SwiftUI.swift; sourceTree = "<group>"; };
@@ -78,7 +78,7 @@
 			);
 			name = RenderWindow_iOS_SwiftUI;
 			productName = RenderWindow_iOS_SwiftUI;
-			productReference = A45711622E21B6AA00997A2B /* RenderWindow_iOS_SwiftUI.app */;
+			productReference = A45D9E262E2725ED00B6F9D5 /* RenderWindow_iOS_SwiftUI.app */;
 			productType = "com.apple.product-type.application";
 		};
 		A4ADAC3D2E20BEF0009C84AD /* RenderWindow_macOS_AppKit */ = {
@@ -95,7 +95,7 @@
 			);
 			name = RenderWindow_macOS_AppKit;
 			productName = RenderWindow_AppKit;
-			productReference = A457115C2E21B65200997A2B /* RenderWindow_macOS_AppKit.app */;
+			productReference = A45D9E272E2725ED00B6F9D5 /* RenderWindow_macOS_AppKit.app */;
 			productType = "com.apple.product-type.application";
 		};
 		A4D42A5B2E20713600B2A12B /* RenderWindow_macOS_SwiftUI */ = {
@@ -112,7 +112,7 @@
 			);
 			name = RenderWindow_macOS_SwiftUI;
 			productName = CrossWindow;
-			productReference = A457115D2E21B65200997A2B /* RenderWindow_macOS_SwiftUI.app */;
+			productReference = A45D9E282E2725ED00B6F9D5 /* RenderWindow_macOS_SwiftUI.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

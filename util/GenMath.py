@@ -29,6 +29,8 @@ class BinaryOperator(Operator):
 
 class Negate(UnaryOperator):
 	def apply(self, lhs):
+		if (lhs == 0):
+			return lhs
 		return -lhs
 	def symbol(self):
 		return "-"
@@ -37,6 +39,12 @@ class Negate(UnaryOperator):
 
 class Add(BinaryOperator):
 	def apply(self, lhs, rhs):
+		if (lhs == 0 and rhs == 0):
+			return 0;
+		if (lhs == 0):
+			return rhs
+		if (rhs == 0):
+			return lhs
 		return lhs + rhs
 	def symbol(self):
 		return "+"
@@ -45,6 +53,8 @@ class Add(BinaryOperator):
 
 class Divide(BinaryOperator):
 	def apply(self, lhs, rhs):
+		if (rhs == 1):
+			return lhs;
 		return lhs / rhs
 	def symbol(self):
 		return "/"
@@ -53,6 +63,12 @@ class Divide(BinaryOperator):
 
 class Multiply(BinaryOperator):
 	def apply(self, lhs, rhs):
+		if (lhs == 0 or rhs == 0):
+			return 0;
+		if (lhs == 1):
+			return rhs
+		if (rhs == 1):
+			return lhs
 		return lhs * rhs
 	def symbol(self):
 		return "*"
@@ -61,6 +77,8 @@ class Multiply(BinaryOperator):
 
 class Subtract(BinaryOperator):
 	def apply(self, lhs, rhs):
+		if (rhs == 0):
+			return lhs
 		return lhs - rhs
 	def symbol(self):
 		return "-"
@@ -68,13 +86,14 @@ class Subtract(BinaryOperator):
 		return self.lhs.simplify() - self.rhs.simplify()
 
 class MatrixElement:
-	def __init__(self, i1, j1):
+	def __init__(self, i1, j1, name = "m"):
+		self.name = name
 		self.i1 = i1
 		self.j1 = j1
 	def __str__(self):
-		return "m[" + str(self.i1) + "][" + str(self.j1) + "]"
+		return self.name + "[" + str(self.i1) + "][" + str(self.j1) + "]"
 	def __repr__(self):
-		return "m[" + str(self.i1) + "][" + str(self.j1) + "]"
+		return self.name + "[" + str(self.i1) + "][" + str(self.j1) + "]"
 
 def isNumeric(v):
 	return True if (type(v) == int or type(v) == float) else False
@@ -111,6 +130,11 @@ class Matrix:
 def matPrint(m):
 	for i1 in m:
 		print(i1)
+
+def matPython(m):
+	for i1 in range(len(m)):
+		for j1 in range(len(m[i1])):
+			print("m[" + str(i1) + "][" + str(j1) + "] = " + str(m[i1][j1]))
 
 def matCofactor(m):
 	return matVisitIndex(m, lambda v, i, j : v if ((i + j) % 2 == 0) else Negate(v))
@@ -162,9 +186,9 @@ def matInverse(m):
 		j2 = []
 		for j1 in range(len(m[i1])):
 			lhs = m[i1][j1]
-			rhs = matMinor(m, i1, j1);
+			rhs = matMinor(m, i1, j1)
 			rhs = matDeterminant(rhs)
-			j2.append(Multiply(lhs, rhs));
+			j2.append(rhs)
 		i2.append(j2)
 	i2 = matCofactor(i2)
 	i2 = matTranspose(i2)
@@ -184,6 +208,22 @@ def matMinor(m, i, j):
 		i2.append(j2)
 	return i2
 
+def matMultiply(m, n):
+	i2 = []
+	for i1 in range(len(m)):
+		j2 = []
+		for j1 in range(len(m[i1])):
+			runsum = None
+			for k1 in range(len(m)):
+				concat = Multiply(m[i1][k1], n[k1][j1])
+				if runsum == None:
+					runsum = concat
+				else:
+					runsum = Add(runsum, concat)
+			j2.append(runsum)
+		i2.append(j2)
+	return i2
+
 def matRank(m):
 	size = len(m);
 	for i1 in m:
@@ -200,12 +240,12 @@ def matScalarMultiply(lhs, rhs):
 def matSimplify(m):
 	return matVisit(m, lambda x : simplify(x))
 
-def matSymbolic(size):
+def matSymbolic(size, name = "m"):
 	i2 = []
 	for i1 in range(size):
 		j2 = []
 		for j1 in range(size):
-			j2.append(MatrixElement(i1, j1))
+			j2.append(MatrixElement(i1, j1, name))
 		i2.append(j2)
 	return i2
 
@@ -264,7 +304,10 @@ def decorateTest(fn):
 	print("# Running Test: " + fn.__name__)
 	print("###############################################################################")
 	print()
-	result = fn()
+	try:
+		result = fn()
+	except BaseException:
+		result = None
 	print("  " + fn.__name__ + "() = ", end="")
 	print(ANSI.OKGREEN, end="")
 	print(str(result))
@@ -279,9 +322,13 @@ def decorateTestN(n):
 		print("###############################################################################")
 		for i in n:
 			print()
+			try:
+				result = fn(i)
+			except BaseException:
+				result = None
 			print("  " + fn.__name__ + "(" + str(i) + ") = ", end="")
 			print(ANSI.OKGREEN, end="")
-			print(str(fn(i)))
+			print(str(result))
 			print(ANSI.ENDC, end="")
 	print()
 	return decorator
@@ -328,8 +375,36 @@ def testMatInverseN(i):
 	return Assert(matIsEqual(matIdentity(i), matSimplify(matInverse(matIdentity(i)))))
 
 @decorateTest
+def testMatInverse_Scale():
+	mat = matIdentity(4)
+	mat[1][1] = 10
+	inv = matInverse(mat)
+	inv = matSimplify(inv)
+	assert RoughlyEqual(inv[0][0], 1.0)
+	assert RoughlyEqual(inv[1][1], 0.1)
+	assert RoughlyEqual(inv[2][2], 1.0)
+	assert RoughlyEqual(inv[3][3], 1.0)
+	return True
+
+@decorateTest
+def testMatInverse_Identity():
+	mat = matIdentity(4)
+	mat[1][1] = 10
+	inv = matSimplify(matInverse(mat))
+	res = matMultiply(mat, inv)
+	res = matSimplify(res);
+	assert RoughlyEqual(res[0][0], 1.0)
+	assert RoughlyEqual(res[1][1], 1.0)
+	assert RoughlyEqual(res[2][2], 1.0)
+	assert RoughlyEqual(res[3][3], 1.0)
+	return True
+
+@decorateTest
 def testMatMinor():
 	return matMinor(matIdentity(3), 0, 1)
+
+def testMatMultiply():
+	return matMultiply(matIdentity(3), matSymbolic(3))
 
 @decorateTest
 def testMatScalarDivide():
@@ -358,3 +433,11 @@ def testMatVisit():
 @decorateTest
 def testMatVisitIndex():
 	return matVisitIndex(matSymbolic(4), lambda x, i1, j1 : print(str(i1) + "," + str(j1) + "=" + str(x)))
+
+def RoughlyEqual(a, b):
+	return True if abs(b - a) < 0.0001 else False
+
+#@decorateTest
+#def testRUNME():
+#	matPrint(matMultiply(matIdentity(3), matSymbolic(3)))
+#	return True

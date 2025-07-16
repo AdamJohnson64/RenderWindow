@@ -1,0 +1,57 @@
+const canvas = document.querySelector("#gl-canvas");
+const gl = canvas.getContext("webgl");
+if (gl === null) {
+	alert("WebGL Unavailable.");
+	throw new Error();
+}
+
+function renderMesh(parametric) {
+  // Position
+  gl.bindBuffer(gl.ARRAY_BUFFER, parametric.id_vertex);
+  gl.enableVertexAttribArray(0);
+  gl.vertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, 12, 0);
+  // Normal
+  gl.bindBuffer(gl.ARRAY_BUFFER, parametric.id_normal);
+  gl.enableVertexAttribArray(1);
+  gl.vertexAttribPointer(1, 3, gl.FLOAT, gl.FALSE, 12, 0);
+  // Draw
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, parametric.id_index);
+  gl.drawElements(gl.TRIANGLES, 3 * parametric.triangle_count, gl.UNSIGNED_SHORT, 0);
+}
+
+const code_vertex = `#version 100
+attribute vec3 pos;
+attribute vec3 nor;
+varying highp vec3 nor2;
+uniform mat4 mvp;
+
+void main(void) {
+  gl_Position = mvp * vec4(pos.x, pos.y, pos.z, 1.0);
+  nor2 = nor + vec3(0.5, 0.5, 0.5);
+}
+`;
+
+const code_fragment = `#version 100
+varying highp vec3 nor2;
+
+void main(void) {
+  gl_FragColor = vec4(nor2.x, nor2.y, nor2.z, 1.0);
+}
+`;
+
+const id_program = compileProgram(code_vertex, code_fragment);
+
+const parametric = createParametric(sphere, 10, 10);
+
+function render() {
+  gl.clearColor(Math.random(), Math.random(), Math.random(), 1.0);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.useProgram(id_program);
+  mat = matTranslate(0.1, 0, 0);
+  flat = matFlatten(mat);
+  const uniform_mvp = gl.getUniformLocation(id_program, "mvp");
+  gl.uniformMatrix4fv(uniform_mvp, gl.FALSE, flat);
+  renderMesh(parametric);
+}
+
+setInterval(render, 1000);
