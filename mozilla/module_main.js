@@ -40,7 +40,7 @@ void main(void) {
 `;
 
 const id_program = compileProgram(code_vertex, code_fragment);
-const parametric = createParametric(sphere, 10, 10);
+const parametric = createParametric(sphere, 20, 20);
 var frame = 0
 
 function render() {
@@ -57,11 +57,11 @@ function render() {
     var projection = matProjection(90, 0.001, 100.0);
     mat = matMultiply(model, view);
     mat = matMultiply(mat, projection);
-    frame = frame + 0.01;
+    frame = frame + 0.001;
     const uniform_mvp = gl.getUniformLocation(id_program, "mvp");
     gl.uniformMatrix4fv(uniform_mvp, gl.TRUE, matFlatten(mat));
     renderMesh(parametric);
   }
 }
 
-setInterval(render, 100);
+setInterval(render, 1000 / 60);
