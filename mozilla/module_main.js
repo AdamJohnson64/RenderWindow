@@ -51,13 +51,17 @@ function render() {
   gl.useProgram(id_program);
   gl.enable(gl.DEPTH_TEST);
   gl.depthFunc(gl.LESS);
-  var projection = matProjection(90, 0.001, 100.0);
-  var view = matLookAt([5 * Math.cos(frame),0,2 * Math.sin(frame)],[0,0,0],[0,1,0])
-  mat = matMultiply(view, projection);
-  frame = frame + 0.1;
-  const uniform_mvp = gl.getUniformLocation(id_program, "mvp");
-  gl.uniformMatrix4fv(uniform_mvp, gl.TRUE, matFlatten(mat));
-  renderMesh(parametric);
+  for (var x = -5; x < 5; ++x) {
+    var model = matTranslate(x, 0, 0);
+    var view = matLookAt([10 * Math.cos(frame),0,5 * Math.sin(frame)],[0,0,0],[0,1,0])
+    var projection = matProjection(90, 0.001, 100.0);
+    mat = matMultiply(model, view);
+    mat = matMultiply(mat, projection);
+    frame = frame + 0.01;
+    const uniform_mvp = gl.getUniformLocation(id_program, "mvp");
+    gl.uniformMatrix4fv(uniform_mvp, gl.TRUE, matFlatten(mat));
+    renderMesh(parametric);
+  }
 }
 
 setInterval(render, 100);
