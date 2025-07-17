@@ -1,286 +1,493 @@
+"""
+General Mathematics Library
+
+A comprehensive library for symbolic matrix operations including:
+- Basic arithmetic operators (add, subtract, multiply, divide, negate)
+- Matrix operations (determinant, inverse, transpose, etc.)
+- Symbolic computation with expression trees
+- Test suite with colored output
+
+Author: Mathematical Operations Library
+"""
+
+from typing import Union, List, Callable, Any
+import math
+
+
 class Operator:
-	def symbol(self):
-		raise NotImplementedError("symbol() not defined.")
+    """Base class for mathematical operators."""
+    
+    def symbol(self) -> str:
+        """Return the symbol representation of this operator."""
+        raise NotImplementedError("symbol() not defined.")
+
 
 class UnaryOperator(Operator):
-	def __init__(self, lhs):
-		self.lhs = lhs
-	def apply(self, lhs):
-		raise NotImplementedError("apply() not defjned.")
-	def simplify(self):
-		raise NotImplementedError("simplify() not defjned.")
-	def __str__(self):
-		return "(" + self.symbol() + str(self.lhs) + ")"
-	def __repr__(self):
-		return "(" + self.symbol() + str(self.lhs) + ")"
+    """Base class for unary operators (operate on one operand)."""
+    
+    def __init__(self, lhs):
+        self.lhs = lhs
+    
+    def apply(self, lhs):
+        """Apply the operator to the left-hand side operand."""
+        raise NotImplementedError("apply() not defined.")
+    
+    def simplify(self):
+        """Simplify the expression tree."""
+        raise NotImplementedError("simplify() not defined.")
+    
+    def __str__(self):
+        return f"({self.symbol()}{self.lhs})"
+    
+    def __repr__(self):
+        return f"({self.symbol()}{self.lhs})"
+
 
 class BinaryOperator(Operator):
-	def __init__(self, lhs, rhs):
-		self.lhs = lhs
-		self.rhs = rhs
-	def apply(self, lhs, rhs):
-		raise NotImplementedError("apply() not defjned.")
-	def simplify(self):
-		raise NotImplementedError("simplify() not defjned.")
-	def __str__(self):
-		return "(" + str(self.lhs) + self.symbol() + str(self.rhs) + ")"
-	def __repr__(self):
-		return "(" + str(self.lhs) + self.symbol() + str(self.rhs) + ")"
+    """Base class for binary operators (operate on two operands)."""
+    
+    def __init__(self, lhs, rhs):
+        self.lhs = lhs
+        self.rhs = rhs
+    
+    def apply(self, lhs, rhs):
+        """Apply the operator to the left and right operands."""
+        raise NotImplementedError("apply() not defined.")
+    
+    def simplify(self):
+        """Simplify the expression tree."""
+        raise NotImplementedError("simplify() not defined.")
+    
+    def __str__(self):
+        return f"({self.lhs}{self.symbol()}{self.rhs})"
+    
+    def __repr__(self):
+        return f"({self.lhs}{self.symbol()}{self.rhs})"
+
 
 class Negate(UnaryOperator):
-	def apply(self, lhs):
-		if (lhs == 0):
-			return lhs
-		return -lhs
-	def symbol(self):
-		return "-"
-	def simplify(self):
-		return -self.lhs.simplify()
+    """Unary negation operator (-x)."""
+    
+    def apply(self, lhs):
+        if lhs == 0:
+            return lhs
+        return -lhs
+    
+    def symbol(self):
+        return "-"
+    
+    def simplify(self):
+        return -self.lhs.simplify()
+
 
 class Add(BinaryOperator):
-	def apply(self, lhs, rhs):
-		if (lhs == 0 and rhs == 0):
-			return 0;
-		if (lhs == 0):
-			return rhs
-		if (rhs == 0):
-			return lhs
-		return lhs + rhs
-	def symbol(self):
-		return "+"
-	def simplify(self):
-		return self.lhs.simplify() + self.rhs.simplify()
+    """Binary addition operator (x + y)."""
+    
+    def apply(self, lhs, rhs):
+        if lhs == 0 and rhs == 0:
+            return 0
+        if lhs == 0:
+            return rhs
+        if rhs == 0:
+            return lhs
+        return lhs + rhs
+    
+    def symbol(self):
+        return "+"
+    
+    def simplify(self):
+        return self.lhs.simplify() + self.rhs.simplify()
+
 
 class Divide(BinaryOperator):
-	def apply(self, lhs, rhs):
-		if (rhs == 1):
-			return lhs;
-		return lhs / rhs
-	def symbol(self):
-		return "/"
-	def simplify(self):
-		return self.lhs.simplify() / self.rhs.simplify()
+    """Binary division operator (x / y)."""
+    
+    def apply(self, lhs, rhs):
+        if rhs == 1:
+            return lhs
+        return lhs / rhs
+    
+    def symbol(self):
+        return "/"
+    
+    def simplify(self):
+        return self.lhs.simplify() / self.rhs.simplify()
+
 
 class Multiply(BinaryOperator):
-	def apply(self, lhs, rhs):
-		if (lhs == 0 or rhs == 0):
-			return 0;
-		if (lhs == 1):
-			return rhs
-		if (rhs == 1):
-			return lhs
-		return lhs * rhs
-	def symbol(self):
-		return "*"
-	def simplify(self):
-		return self.lhs.simplify() * self.rhs.simplify()
+    """Binary multiplication operator (x * y)."""
+    
+    def apply(self, lhs, rhs):
+        if lhs == 0 or rhs == 0:
+            return 0
+        if lhs == 1:
+            return rhs
+        if rhs == 1:
+            return lhs
+        return lhs * rhs
+    
+    def symbol(self):
+        return "*"
+    
+    def simplify(self):
+        return self.lhs.simplify() * self.rhs.simplify()
+
 
 class Subtract(BinaryOperator):
-	def apply(self, lhs, rhs):
-		if (rhs == 0):
-			return lhs
-		return lhs - rhs
-	def symbol(self):
-		return "-"
-	def simplify(self):
-		return self.lhs.simplify() - self.rhs.simplify()
+    """Binary subtraction operator (x - y)."""
+    
+    def apply(self, lhs, rhs):
+        if rhs == 0:
+            return lhs
+        return lhs - rhs
+    
+    def symbol(self):
+        return "-"
+    
+    def simplify(self):
+        return self.lhs.simplify() - self.rhs.simplify()
+
 
 class MatrixElement:
-	def __init__(self, i1, j1, name = "m"):
-		self.name = name
-		self.i1 = i1
-		self.j1 = j1
-	def __str__(self):
-		return self.name + "[" + str(self.i1) + "][" + str(self.j1) + "]"
-	def __repr__(self):
-		return self.name + "[" + str(self.i1) + "][" + str(self.j1) + "]"
+    """Represents a symbolic matrix element."""
+    
+    def __init__(self, i: int, j: int, name: str = "m"):
+        self.name = name
+        self.i = i
+        self.j = j
+    
+    def __str__(self):
+        return f"{self.name}[{self.i}][{self.j}]"
+    
+    def __repr__(self):
+        return f"{self.name}[{self.i}][{self.j}]"
 
-def isNumeric(v):
-	return True if (type(v) == int or type(v) == float) else False
 
-def simplify(node):
-	if (type(node) == MatrixElement):
-		return node
-	if (issubclass(type(node), UnaryOperator)):
-		lhs = simplify(node.lhs)
-		return node.apply(lhs)
-	if (issubclass(type(node), BinaryOperator)):
-		lhs = simplify(node.lhs)
-		rhs = simplify(node.rhs)
-		return node.apply(lhs, rhs)
-	if (type(node) == int or type(node) == float):
-		return node;
-	raise TypeError("Bad type in expression tree.")
+def is_numeric(v: Any) -> bool:
+    """Check if a value is numeric (int or float)."""
+    return isinstance(v, (int, float))
+
+
+def simplify(node: Any) -> Any:
+    """
+    Simplify an expression tree node.
+    
+    Args:
+        node: The node to simplify (can be numeric, MatrixElement, or operator)
+    
+    Returns:
+        The simplified result
+    
+    Raises:
+        TypeError: If the node type is not supported
+    """
+    if isinstance(node, MatrixElement):
+        return node
+    if isinstance(node, UnaryOperator):
+        lhs = simplify(node.lhs)
+        return node.apply(lhs)
+    if isinstance(node, BinaryOperator):
+        lhs = simplify(node.lhs)
+        rhs = simplify(node.rhs)
+        return node.apply(lhs, rhs)
+    if isinstance(node, (int, float)):
+        return node
+    raise TypeError(f"Unsupported type in expression tree: {type(node)}")
+
 
 class Matrix:
-	def __init__(self, m):
-		self.m = m
-	def Identity(i):
-		i2 = []
-		for i1 in range(i):
-			j2 = []
-			for j1 in range(i):
-				j2.append(1 if i1 == j1 else 0)
-			i2.append(j2)
-		return Matrix(i2)
-	def Print(self):
-		for i1 in self.m:
-			print(i1)
+    """Matrix class for matrix operations."""
+    
+    def __init__(self, m: List[List]):
+        self.m = m
+    
+    @staticmethod
+    def identity(size: int) -> 'Matrix':
+        """Create an identity matrix of given size."""
+        matrix = []
+        for i in range(size):
+            row = []
+            for j in range(size):
+                row.append(1 if i == j else 0)
+            matrix.append(row)
+        return Matrix(matrix)
+    
+    def print_matrix(self):
+        """Print the matrix in a readable format."""
+        for row in self.m:
+            print(row)
 
-def matPrint(m):
-	for i1 in m:
-		print(i1)
 
-def matPython(m):
-	for i1 in range(len(m)):
-		for j1 in range(len(m[i1])):
-			print("m[" + str(i1) + "][" + str(j1) + "] = " + str(m[i1][j1]))
+# =============================================================================
+# Matrix Utility Functions
+# =============================================================================
 
-def matCofactor(m):
-	return matVisitIndex(m, lambda v, i, j : v if ((i + j) % 2 == 0) else Negate(v))
+def mat_print(m: List[List]) -> None:
+    """Print a matrix in a readable format."""
+    for row in m:
+        print(row)
 
-def matDeterminant(m):
-	if (matRank(m) == -1):
-		raise ValueError("Can't compute a determinant for a non-square matrix.")
-	if (matRank(m) == 1):
-		return m[0][0];
-	if (matRank(m) == 2):
-		a = Multiply(m[0][0], m[1][1])
-		b = Multiply(m[0][1], m[1][0])
-		return Subtract(a, b)
-	runsum = None
-	for j1 in range(len(m[0])):
-		m2 = matMinor(m, 0, j1)
-		m2 = matDeterminant(m2)
-		m2 = Multiply(m[0][j1], m2)
-		if (runsum == None):
-			runsum = m2
-		else:
-			if (j1 % 2 == 0):
-				runsum = Add(runsum, m2)
-			else:
-				runsum = Subtract(runsum, m2)
-	return runsum
 
-def matIsEqual(lhs, rhs):
-	for i1 in range(len(lhs)):
-		for j1 in range(len(lhs[i1])):
-			if (lhs[i1][j1] != rhs[i1][j1]):
-				return False
-	return True
+def mat_python(m: List[List]) -> None:
+    """Print matrix elements in Python array format."""
+    for i in range(len(m)):
+        for j in range(len(m[i])):
+            print(f"m[{i}][{j}] = {m[i][j]}")
 
-def matIdentity(size):
-	i2 = []
-	for i1 in range(size):
-		j2 = []
-		for j1 in range(size):
-			j2.append(1 if i1 == j1 else 0)
-		i2.append(j2)
-	return i2
 
-def matInverse(m):
-	if (matRank(m) == -1):
-		raise ValueError("Can't invert a non-square matrix.")
-	i2 = []
-	for i1 in range(len(m)):
-		j2 = []
-		for j1 in range(len(m[i1])):
-			lhs = m[i1][j1]
-			rhs = matMinor(m, i1, j1)
-			rhs = matDeterminant(rhs)
-			j2.append(rhs)
-		i2.append(j2)
-	i2 = matCofactor(i2)
-	i2 = matTranspose(i2)
-	i2 = matScalarDivide(i2, matDeterminant(m))
-	return i2
+def mat_cofactor_signs(m: List[List]) -> List[List]:
+    """Apply cofactor signs to a matrix (multiply by (-1)^(i+j))."""
+    return mat_visit_index(m, lambda v, i, j: v if (i + j) % 2 == 0 else Negate(v))
 
-def matMinor(m, i, j):
-	i2 = []
-	for i1 in range(len(m)):
-		if (i1 == i):
-			continue
-		j2 = []
-		for j1 in range(len(m[i1])):
-			if (j1 == j):
-				continue
-			j2.append(m[i1][j1])
-		i2.append(j2)
-	return i2
 
-def matMultiply(m, n):
-	i2 = []
-	for i1 in range(len(m)):
-		j2 = []
-		for j1 in range(len(m[i1])):
-			runsum = None
-			for k1 in range(len(m)):
-				concat = Multiply(m[i1][k1], n[k1][j1])
-				if runsum == None:
-					runsum = concat
-				else:
-					runsum = Add(runsum, concat)
-			j2.append(runsum)
-		i2.append(j2)
-	return i2
+def mat_cofactor_matrix(m: List[List]) -> List[List]:
+    """Compute the cofactor matrix (minors with cofactor signs applied)."""
+    cofactors = []
+    for i in range(len(m)):
+        row = []
+        for j in range(len(m[i])):
+            minor = mat_minor(m, i, j)
+            minor_det = mat_determinant(minor)
+            # Apply cofactor sign: (-1)^(i+j)
+            if (i + j) % 2 == 1:
+                minor_det = Negate(minor_det)
+            row.append(minor_det)
+        cofactors.append(row)
+    return cofactors
 
-def matRank(m):
-	size = len(m);
-	for i1 in m:
-		if (len(i1) != size):
-			return -1
-	return size
 
-def matScalarDivide(lhs, rhs):
-	return matVisit(lhs, lambda x : Divide(x, rhs))
+def mat_determinant(m: List[List]) -> Any:
+    """
+    Compute the determinant of a matrix.
+    
+    Args:
+        m: The input matrix
+    
+    Returns:
+        The determinant value
+    
+    Raises:
+        ValueError: If the matrix is not square
+    """
+    if mat_rank(m) == -1:
+        raise ValueError("Cannot compute determinant for a non-square matrix.")
+    
+    if mat_rank(m) == 1:
+        return m[0][0]
+    
+    if mat_rank(m) == 2:
+        a = Multiply(m[0][0], m[1][1])
+        b = Multiply(m[0][1], m[1][0])
+        return Subtract(a, b)
+    
+    # For larger matrices, use cofactor expansion along first row
+    result = None
+    for j in range(len(m[0])):
+        minor = mat_minor(m, 0, j)
+        minor_det = mat_determinant(minor)
+        term = Multiply(m[0][j], minor_det)
+        
+        if result is None:
+            result = term
+        else:
+            if j % 2 == 0:
+                result = Add(result, term)
+            else:
+                result = Subtract(result, term)
+    
+    return result
 
-def matScalarMultiply(lhs, rhs):
-	return matVisit(lhs, lambda x : Multiply(x, rhs))
 
-def matSimplify(m):
-	return matVisit(m, lambda x : simplify(x))
+def mat_is_equal(lhs: List[List], rhs: List[List]) -> bool:
+    """Check if two matrices are equal."""
+    if len(lhs) != len(rhs):
+        return False
+    for i in range(len(lhs)):
+        if len(lhs[i]) != len(rhs[i]):
+            return False
+        for j in range(len(lhs[i])):
+            if lhs[i][j] != rhs[i][j]:
+                return False
+    return True
 
-def matSymbolic(size, name = "m"):
-	i2 = []
-	for i1 in range(size):
-		j2 = []
-		for j1 in range(size):
-			j2.append(MatrixElement(i1, j1, name))
-		i2.append(j2)
-	return i2
 
-def matTranspose(m):
-	i2 = []
-	for i1 in range(len(m)):
-		j2 = []
-		for j1 in range(len(m[i1])):
-			j2.append(m[j1][i1])
-		i2.append(j2)
-	return i2
+def mat_identity(size: int) -> List[List]:
+    """Create an identity matrix of given size."""
+    matrix = []
+    for i in range(size):
+        row = []
+        for j in range(size):
+            row.append(1 if i == j else 0)
+        matrix.append(row)
+    return matrix
 
-def matVisit(m, fn):
-	i2 = []
-	for i1 in m:
-		j2 = []
-		for j1 in i1:
-			j2.append(fn(j1))
-		i2.append(j2)
-	return i2
 
-def matVisitIndex(m, fn):
-	i2 = []
-	for i1 in range(len(m)):
-		j2 = []
-		for j1 in range(len(m[i1])):
-			j2.append(fn(m[i1][j1], i1, j1))
-		i2.append(j2)
-	return i2
+def mat_inverse(m: List[List]) -> List[List]:
+    """
+    Compute the inverse of a matrix using the adjugate method.
+    
+    The inverse is computed as: A^(-1) = (1/det(A)) * adj(A)
+    where adj(A) is the transpose of the cofactor matrix.
+    
+    Args:
+        m: The input matrix
+    
+    Returns:
+        The inverse matrix
+    
+    Raises:
+        ValueError: If the matrix is not square or not invertible
+    """
+    if mat_rank(m) == -1:
+        raise ValueError("Cannot invert a non-square matrix.")
+    
+    # Compute determinant first to check if matrix is invertible
+    det = mat_determinant(m)
+    if det == 0:
+        raise ValueError("Matrix is not invertible (determinant is zero).")
+    
+    # Compute cofactor matrix
+    cofactor_matrix = mat_cofactor_matrix(m)
+    
+    # Transpose to get adjugate matrix
+    adjugate = mat_transpose(cofactor_matrix)
+    
+    # Divide by determinant
+    return mat_scalar_divide(adjugate, det)
 
-########################################
+
+def mat_minor(m: List[List], i: int, j: int) -> List[List]:
+    """Compute the minor matrix by removing row i and column j."""
+    minor = []
+    for row_idx in range(len(m)):
+        if row_idx == i:
+            continue
+        row = []
+        for col_idx in range(len(m[row_idx])):
+            if col_idx == j:
+                continue
+            row.append(m[row_idx][col_idx])
+        minor.append(row)
+    return minor
+
+
+def mat_multiply(m: List[List], n: List[List]) -> List[List]:
+    """
+    Multiply two matrices.
+    
+    Args:
+        m: First matrix (m x p)
+        n: Second matrix (p x n)
+    
+    Returns:
+        Result matrix (m x n)
+    
+    Raises:
+        ValueError: If matrices have incompatible dimensions
+    """
+    # Check matrix dimensions
+    if len(m) == 0 or len(n) == 0:
+        raise ValueError("Cannot multiply empty matrices.")
+    
+    if len(m[0]) != len(n):
+        raise ValueError(f"Matrix dimensions incompatible: {len(m)}x{len(m[0])} and {len(n)}x{len(n[0])}")
+    
+    result = []
+    for i in range(len(m)):
+        row = []
+        for j in range(len(n[0])):
+            sum_term = None
+            for k in range(len(m[0])):
+                term = Multiply(m[i][k], n[k][j])
+                if sum_term is None:
+                    sum_term = term
+                else:
+                    sum_term = Add(sum_term, term)
+            row.append(sum_term)
+        result.append(row)
+    return result
+
+
+def mat_rank(m: List[List]) -> int:
+    """Get the rank (size) of a square matrix, or -1 if not square."""
+    if len(m) == 0:
+        return 0
+    size = len(m)
+    for row in m:
+        if len(row) != size:
+            return -1
+    return size
+
+
+def mat_scalar_divide(matrix: List[List], scalar: Union[int, float]) -> List[List]:
+    """Divide each element of a matrix by a scalar."""
+    if scalar == 0:
+        raise ValueError("Cannot divide by zero.")
+    return mat_visit(matrix, lambda x: Divide(x, scalar))
+
+
+def mat_scalar_multiply(matrix: List[List], scalar: Union[int, float]) -> List[List]:
+    """Multiply each element of a matrix by a scalar."""
+    return mat_visit(matrix, lambda x: Multiply(x, scalar))
+
+
+def mat_simplify(m: List[List]) -> List[List]:
+    """Simplify all elements in a matrix."""
+    return mat_visit(m, lambda x: simplify(x))
+
+
+def mat_symbolic(size: int, name: str = "m") -> List[List]:
+    """Create a symbolic matrix of given size."""
+    matrix = []
+    for i in range(size):
+        row = []
+        for j in range(size):
+            row.append(MatrixElement(i, j, name))
+        matrix.append(row)
+    return matrix
+
+
+def mat_transpose(m: List[List]) -> List[List]:
+    """Transpose a matrix."""
+    if len(m) == 0:
+        return []
+    result = []
+    for i in range(len(m[0])):
+        row = []
+        for j in range(len(m)):
+            row.append(m[j][i])
+        result.append(row)
+    return result
+
+
+def mat_visit(m: List[List], fn: Callable) -> List[List]:
+    """Apply a function to each element of a matrix."""
+    result = []
+    for row in m:
+        new_row = []
+        for element in row:
+            new_row.append(fn(element))
+        result.append(new_row)
+    return result
+
+
+def mat_visit_index(m: List[List], fn: Callable) -> List[List]:
+    """Apply a function to each element of a matrix with indices."""
+    result = []
+    for i in range(len(m)):
+        row = []
+        for j in range(len(m[i])):
+            row.append(fn(m[i][j], i, j))
+        result.append(row)
+    return result
+
+
+# =============================================================================
 # Test Suite
-########################################
+# =============================================================================
 
 class ANSI:
+    """ANSI color codes for terminal output."""
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKCYAN = '\033[96m'
@@ -291,153 +498,244 @@ class ANSI:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-def Assert(result):
-	assert(result)
-	return result
 
-def test(fn):
-	print("Running Test: " + fn.__name__)
-	print("  Result: " + str(fn()))
+def assert_result(result: bool) -> bool:
+    """Assert a result and return it."""
+    assert result
+    return result
 
-def decorateTest(fn):
-	print("###############################################################################")
-	print("# Running Test: " + fn.__name__)
-	print("###############################################################################")
-	print()
-	try:
-		result = fn()
-	except BaseException:
-		result = None
-	print("  " + fn.__name__ + "() = ", end="")
-	print(ANSI.OKGREEN, end="")
-	print(str(result))
-	print(ANSI.ENDC, end="")
-	print()
-	return fn
 
-def decorateTestN(n):
-	def decorator(fn):
-		print("###############################################################################")
-		print("# Running Test: " + fn.__name__)
-		print("###############################################################################")
-		for i in n:
-			print()
-			try:
-				result = fn(i)
-			except BaseException:
-				result = None
-			print("  " + fn.__name__ + "(" + str(i) + ") = ", end="")
-			print(ANSI.OKGREEN, end="")
-			print(str(result))
-			print(ANSI.ENDC, end="")
-	print()
-	return decorator
+def test(fn: Callable) -> None:
+    """Run a test function and print results."""
+    print(f"Running Test: {fn.__name__}")
+    print(f"  Result: {fn()}")
 
-@decorateTest
-def testMatDeterminant2():
-	return matDeterminant(matIdentity(2))
 
-@decorateTest
-def testMatDeterminant3():
-	return matDeterminant(matIdentity(3))
+def decorate_test(fn: Callable) -> Callable:
+    """Decorator to run a test with formatted output."""
+    print("=" * 79)
+    print(f"# Running Test: {fn.__name__}")
+    print("=" * 79)
+    print()
+    
+    try:
+        result = fn()
+    except Exception:
+        result = None
+    
+    print(f"  {fn.__name__}() = ", end="")
+    print(ANSI.OKGREEN, end="")
+    print(str(result))
+    print(ANSI.ENDC, end="")
+    print()
+    return fn
 
-@decorateTest
-def testMatDeterminant4():
-	return matDeterminant(matIdentity(4))
 
-@decorateTestN(range(2, 6))
-def testMatDeterminantN(i):
-	return matDeterminant(matIdentity(i))
+def decorate_test_n(n_range) -> Callable:
+    """Decorator to run a test with multiple parameters."""
+    def decorator(fn: Callable) -> Callable:
+        print("=" * 79)
+        print(f"# Running Test: {fn.__name__}")
+        print("=" * 79)
+        
+        for i in n_range:
+            print()
+            try:
+                result = fn(i)
+            except Exception:
+                result = None
+            
+            print(f"  {fn.__name__}({i}) = ", end="")
+            print(ANSI.OKGREEN, end="")
+            print(str(result))
+            print(ANSI.ENDC, end="")
+        print()
+        return fn
+    return decorator
 
-@decorateTestN(range(2, 6))
-def testMatDeterminant_Of_Identity_Is_One(i):
-	return Assert(simplify(matDeterminant(matIdentity(i))) == 1)
 
-@decorateTest
-def testMatIdentity2():
-	return matIdentity(2)
+# =============================================================================
+# Test Functions
+# =============================================================================
 
-@decorateTest
-def testMatIdentity3():
-	return matIdentity(3)
+@decorate_test
+def test_mat_determinant_2():
+    """Test determinant of 2x2 identity matrix."""
+    return mat_determinant(mat_identity(2))
 
-@decorateTest
-def testMatIdentity4():
-	return matIdentity(4)
 
-@decorateTestN(range(2, 6))
-def testMatIdentityN(i):
-	return matIdentity(i)
+@decorate_test
+def test_mat_determinant_3():
+    """Test determinant of 3x3 identity matrix."""
+    return mat_determinant(mat_identity(3))
 
-# Inverse of an identity is still the identity.
-@decorateTestN(range(2, 6))
-def testMatInverseN(i):
-	return Assert(matIsEqual(matIdentity(i), matSimplify(matInverse(matIdentity(i)))))
 
-@decorateTest
-def testMatInverse_Scale():
-	mat = matIdentity(4)
-	mat[1][1] = 10
-	inv = matInverse(mat)
-	inv = matSimplify(inv)
-	assert RoughlyEqual(inv[0][0], 1.0)
-	assert RoughlyEqual(inv[1][1], 0.1)
-	assert RoughlyEqual(inv[2][2], 1.0)
-	assert RoughlyEqual(inv[3][3], 1.0)
-	return True
+@decorate_test
+def test_mat_determinant_4():
+    """Test determinant of 4x4 identity matrix."""
+    return mat_determinant(mat_identity(4))
 
-@decorateTest
-def testMatInverse_Identity():
-	mat = matIdentity(4)
-	mat[1][1] = 10
-	inv = matSimplify(matInverse(mat))
-	res = matMultiply(mat, inv)
-	res = matSimplify(res);
-	assert RoughlyEqual(res[0][0], 1.0)
-	assert RoughlyEqual(res[1][1], 1.0)
-	assert RoughlyEqual(res[2][2], 1.0)
-	assert RoughlyEqual(res[3][3], 1.0)
-	return True
 
-@decorateTest
-def testMatMinor():
-	return matMinor(matIdentity(3), 0, 1)
+@decorate_test_n(range(2, 6))
+def test_mat_determinant_n(i: int):
+    """Test determinant of nxn identity matrices."""
+    return mat_determinant(mat_identity(i))
 
-def testMatMultiply():
-	return matMultiply(matIdentity(3), matSymbolic(3))
 
-@decorateTest
-def testMatScalarDivide():
-	return matScalarDivide(matSymbolic(4), 64)
+@decorate_test_n(range(2, 6))
+def test_mat_determinant_of_identity_is_one(i: int):
+    """Test that determinant of identity matrix is 1."""
+    return assert_result(simplify(mat_determinant(mat_identity(i))) == 1)
 
-@decorateTest
-def testMatScalarMultiply():
-	return matScalarMultiply(matSymbolic(4), 64)
 
-@decorateTestN(range(2, 6))
-def testMatRankN(i):
-	return Assert(matRank(matSymbolic(i)) == i)
+@decorate_test
+def test_mat_identity_2():
+    """Test 2x2 identity matrix creation."""
+    return mat_identity(2)
 
-@decorateTest
-def testMatSimplify():
-	return matSimplify(matScalarDivide(matScalarMultiply(matIdentity(4), 64), 64))
 
-@decorateTestN(range(2, 6))
-def testMatSymbolic(i):
-	return matSymbolic(i)
+@decorate_test
+def test_mat_identity_3():
+    """Test 3x3 identity matrix creation."""
+    return mat_identity(3)
 
-@decorateTest
-def testMatVisit():
-	return matVisit(matSymbolic(4), lambda x : print(str(x)))
-	
-@decorateTest
-def testMatVisitIndex():
-	return matVisitIndex(matSymbolic(4), lambda x, i1, j1 : print(str(i1) + "," + str(j1) + "=" + str(x)))
 
-def RoughlyEqual(a, b):
-	return True if abs(b - a) < 0.0001 else False
+@decorate_test
+def test_mat_identity_4():
+    """Test 4x4 identity matrix creation."""
+    return mat_identity(4)
 
-#@decorateTest
-#def testRUNME():
-#	matPrint(matMultiply(matIdentity(3), matSymbolic(3)))
-#	return True
+
+@decorate_test_n(range(2, 6))
+def test_mat_identity_n(i: int):
+    """Test nxn identity matrix creation."""
+    return mat_identity(i)
+
+
+@decorate_test_n(range(2, 6))
+def test_mat_inverse_n(i: int):
+    """Test that inverse of identity is still identity."""
+    return assert_result(mat_is_equal(mat_identity(i), mat_simplify(mat_inverse(mat_identity(i)))))
+
+
+@decorate_test
+def test_mat_inverse_scale():
+    """Test inverse of a scaled identity matrix."""
+    mat = mat_identity(4)
+    mat[1][1] = 10
+    inv = mat_inverse(mat)
+    inv = mat_simplify(inv)
+    
+    assert roughly_equal(inv[0][0], 1.0)
+    assert roughly_equal(inv[1][1], 0.1)
+    assert roughly_equal(inv[2][2], 1.0)
+    assert roughly_equal(inv[3][3], 1.0)
+    return True
+
+
+@decorate_test
+def test_mat_inverse_identity():
+    """Test that matrix times its inverse equals identity."""
+    mat = mat_identity(4)
+    mat[1][1] = 10
+    inv = mat_simplify(mat_inverse(mat))
+    result = mat_multiply(mat, inv)
+    result = mat_simplify(result)
+    
+    assert roughly_equal(result[0][0], 1.0)
+    assert roughly_equal(result[1][1], 1.0)
+    assert roughly_equal(result[2][2], 1.0)
+    assert roughly_equal(result[3][3], 1.0)
+    return True
+
+
+@decorate_test
+def test_mat_minor():
+    """Test minor matrix computation."""
+    return mat_minor(mat_identity(3), 0, 1)
+
+
+def test_mat_multiply():
+    """Test matrix multiplication."""
+    return mat_multiply(mat_identity(3), mat_symbolic(3))
+
+
+@decorate_test
+def test_mat_scalar_divide():
+    """Test scalar division of matrix."""
+    return mat_scalar_divide(mat_symbolic(4), 64)
+
+
+@decorate_test
+def test_mat_scalar_multiply():
+    """Test scalar multiplication of matrix."""
+    return mat_scalar_multiply(mat_symbolic(4), 64)
+
+
+@decorate_test_n(range(2, 6))
+def test_mat_rank_n(i: int):
+    """Test matrix rank computation."""
+    return assert_result(mat_rank(mat_symbolic(i)) == i)
+
+
+@decorate_test
+def test_mat_simplify():
+    """Test matrix simplification."""
+    return mat_simplify(mat_scalar_divide(mat_scalar_multiply(mat_identity(4), 64), 64))
+
+
+@decorate_test_n(range(2, 6))
+def test_mat_symbolic(i: int):
+    """Test symbolic matrix creation."""
+    return mat_symbolic(i)
+
+
+@decorate_test
+def test_mat_visit():
+    """Test matrix element visitation."""
+    return mat_visit(mat_symbolic(4), lambda x: print(str(x)))
+
+
+@decorate_test
+def test_mat_visit_index():
+    """Test matrix element visitation with indices."""
+    return mat_visit_index(mat_symbolic(4), lambda x, i, j: print(f"{i},{j}={x}"))
+
+
+def roughly_equal(a: float, b: float, tolerance: float = 0.0001) -> bool:
+    """Check if two floats are approximately equal within tolerance."""
+    return abs(b - a) < tolerance
+
+
+# =============================================================================
+# Main Execution
+# =============================================================================
+
+if __name__ == "__main__":
+    print(f"{ANSI.HEADER}General Mathematics Library Test Suite{ANSI.ENDC}")
+    print(f"{ANSI.BOLD}Running all tests...{ANSI.ENDC}\n")
+    
+    # Run all tests
+    test_mat_determinant_2()
+    test_mat_determinant_3()
+    test_mat_determinant_4()
+    test_mat_determinant_n(2)  # This will run for range(2, 6)
+    test_mat_determinant_of_identity_is_one(2)  # This will run for range(2, 6)
+    test_mat_identity_2()
+    test_mat_identity_3()
+    test_mat_identity_4()
+    test_mat_identity_n(2)  # This will run for range(2, 6)
+    test_mat_inverse_n(2)  # This will run for range(2, 6)
+    test_mat_inverse_scale()
+    test_mat_inverse_identity()
+    test_mat_minor()
+    test_mat_multiply()
+    test_mat_scalar_divide()
+    test_mat_scalar_multiply()
+    test_mat_rank_n(2)  # This will run for range(2, 6)
+    test_mat_simplify()
+    test_mat_symbolic(2)  # This will run for range(2, 6)
+    test_mat_visit()
+    test_mat_visit_index()
+    
+    print(f"{ANSI.OKGREEN}{ANSI.BOLD}All tests completed!{ANSI.ENDC}")
