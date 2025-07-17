@@ -2,10 +2,16 @@ import MetalKit
 import UIKit
 
 class UIViewControllerImpl: UIViewController {
-    var mtkview = MTKView()
-    var renderer = MTKViewDelegateImpl()
+    var mtkview : MTKView?
+    var renderer : MTKViewDelegate?
     override func loadView() {
-        setupMTKView(view: mtkview, delegate: renderer)
+        if (mtkview == nil) {
+            mtkview = MTKView(frame: .zero, device: MTLCreateSystemDefaultDevice());
+        }
+        if (renderer == nil) {
+            renderer = MTKViewDelegateImpl(device: mtkview!.device!)
+        }
+        setupMTKView(view: mtkview!, delegate: renderer!)
         view = mtkview
     }
     override func viewDidLoad() {

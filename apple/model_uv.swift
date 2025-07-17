@@ -9,9 +9,9 @@ func generateNormal(function: (simd_float2) -> simd_float3, uv: simd_float2) -> 
     return simd_normalize(simd_cross(du, dv))
 }
 
-func generateParametricPositions(function: (simd_float2) -> simd_float3, u: Int, v: Int) -> [Vertex] {
+func generateParametricPositions(function: (simd_float2) -> simd_float3, u: Int, v: Int) -> [Shader.Vertex] {
     var vertices = Array(
-        repeating: Vertex(
+        repeating: Shader.Vertex(
             position: simd_float3(repeating: 0),
             normal: simd_float3(repeating: 0)),
         count: 0);
@@ -19,7 +19,7 @@ func generateParametricPositions(function: (simd_float2) -> simd_float3, u: Int,
         for iu in 0...u {
             let uv = simd_float2(Float(iu) / Float(u), Float(iv) / Float(v))
             let normal = generateNormal(function: function, uv: uv)
-            vertices.append(Vertex(
+            vertices.append(Shader.Vertex(
                 position: function(uv),
                 normal: simd_float3(normal)))
                     //Float.random(in:0..<1), Float.random(in:0..<1), Float.random(in:0..<1))))

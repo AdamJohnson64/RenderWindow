@@ -1,4 +1,3 @@
-import Foundation
 import simd
 
 func simd_float4x4_lookAt(eye: simd_float3, center: simd_float3, up: simd_float3) -> simd_float4x4 {
