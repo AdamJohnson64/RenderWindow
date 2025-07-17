@@ -4,11 +4,11 @@ import simd
 struct Mesh {
     var vertex: MTLBuffer
     var index: MTLBuffer
-    var index_count: Int
+    var indexCount: Int
     init(device: MTLDevice, shape: (simd_float2) -> simd_float3, u: Int, v: Int ) {
         vertex = Mesh.generateBufferVertices(device:device, function: shape, u:u, v:v)
         index = Mesh.generateBufferIndices(device:device, u:u, v:v)
-        index_count = 6 * u * v;
+        indexCount = 6 * u * v;
     }
     static func generateBufferVertices(device: MTLDevice, function: (simd_float2) -> simd_float3, u: Int, v: Int) -> MTLBuffer {
         let data = generateParametricPositions(function:function, u:u, v:v)
@@ -32,7 +32,7 @@ struct Mesh {
         // Draw the whole mesh
         cmd.drawIndexedPrimitives(
             type: .triangle,
-            indexCount: index_count,
+            indexCount: indexCount,
             indexType: .uint16,
             indexBuffer: index,
             indexBufferOffset: 0)
@@ -99,7 +99,7 @@ class Instance {
 
 class MTKViewDelegateImpl : NSObject, MTKViewDelegate {
     var device: MTLDevice
-    var state_depth: MTLDepthStencilState
+    var stateDepth: MTLDepthStencilState
     var instances: [Instance] = []
     var aspect: Float = 1
     var frame: Float = 0
@@ -109,7 +109,7 @@ class MTKViewDelegateImpl : NSObject, MTKViewDelegate {
         let desc = MTLDepthStencilDescriptor()
         desc.depthCompareFunction = .less
         desc.isDepthWriteEnabled = true
-        self.state_depth = device.makeDepthStencilState(descriptor: desc)!
+        self.stateDepth = device.makeDepthStencilState(descriptor: desc)!
         // Create the scene
         let materialFlat = Material(device: device, name: "flat")
         let materialNormal = Material(device: device, name: "normal")
@@ -174,7 +174,7 @@ class MTKViewDelegateImpl : NSObject, MTKViewDelegate {
         let uniformsBuffer = withUnsafeBytes(of: uniformsFrame) { ptr in
             return device.makeBuffer(bytes: ptr.baseAddress!, length: uniformsSize, options: [])! }
         // Start encoding the render command buffer
-        encoder.setDepthStencilState(state_depth)
+        encoder.setDepthStencilState(stateDepth)
         // Bind the per-frame constants
         encoder.setVertexBuffer(uniformsBuffer, offset: 0, index: 1)
         encoder.setFragmentBuffer(uniformsBuffer, offset: 0, index: 1)

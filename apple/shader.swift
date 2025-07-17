@@ -62,10 +62,10 @@ float3 visualizeNormal(float3 norm) {
 }
 
 vertex VertexOut vs_flat(
-        VertexIn in [[stage_in]],
-        constant UniformsFrame& frame [[buffer(1)]],
-        constant UniformsInstance& instance [[buffer(2)]]
-        ) {
+    VertexIn in [[stage_in]],
+    constant UniformsFrame& frame [[buffer(1)]],
+    constant UniformsInstance& instance [[buffer(2)]]
+) {
     VertexOut out;
     out.position = frame.viewProjectionMatrix * instance.modelMatrix * float4(in.position, 1.0);
     float3 light = normalize(float3(1,1,1));
@@ -75,18 +75,18 @@ vertex VertexOut vs_flat(
 }
 
 fragment float4 fs_flat(
-        VertexOut in [[stage_in]],
-        constant UniformsFrame& frame [[buffer(1)]],
-        constant UniformsInstance& instance [[buffer(2)]]
-        ) {
+    VertexOut in [[stage_in]],
+    constant UniformsFrame& frame [[buffer(1)]],
+    constant UniformsInstance& instance [[buffer(2)]]
+) {
     return float4(in.normal, 1.0);
 }
 
 vertex VertexOut vs_normal(
-        VertexIn in [[stage_in]],
-        constant UniformsFrame& frame [[buffer(1)]],
-        constant UniformsInstance& instance [[buffer(2)]]
-        ) {
+    VertexIn in [[stage_in]],
+    constant UniformsFrame& frame [[buffer(1)]],
+    constant UniformsInstance& instance [[buffer(2)]]
+) {
     VertexOut out;
     out.position = frame.viewProjectionMatrix * instance.modelMatrix * float4(in.position, 1.0);
     out.normal = visualizeNormal(in.normal);
@@ -94,18 +94,18 @@ vertex VertexOut vs_normal(
 }
 
 fragment float4 fs_normal(
-        VertexOut in [[stage_in]],
-        constant UniformsFrame& frame [[buffer(1)]],
-        constant UniformsInstance& instance [[buffer(2)]]
-        ) {
+    VertexOut in [[stage_in]],
+    constant UniformsFrame& frame [[buffer(1)]],
+    constant UniformsInstance& instance [[buffer(2)]]
+) {
     return float4(in.normal, 1.0);
 }
 
 vertex VertexOut vs_shiny(
-        VertexIn in [[stage_in]],
-        constant UniformsFrame& frame [[buffer(1)]],
-        constant UniformsInstance& instance [[buffer(2)]]
-        ) {
+    VertexIn in [[stage_in]],
+    constant UniformsFrame& frame [[buffer(1)]],
+    constant UniformsInstance& instance [[buffer(2)]]
+) {
     VertexOut out;
     out.position = frame.viewProjectionMatrix * instance.modelMatrix * float4(in.position, 1.0);
     float3 normal = normalize(in.normal);
@@ -119,10 +119,10 @@ vertex VertexOut vs_shiny(
 }
 
 fragment float4 fs_shiny(
-        VertexOut in [[stage_in]],
-        constant UniformsFrame& frame [[buffer(1)]],
-        constant UniformsInstance& instance [[buffer(2)]]
-        ) {
+    VertexOut in [[stage_in]],
+    constant UniformsFrame& frame [[buffer(1)]],
+    constant UniformsInstance& instance [[buffer(2)]]
+) {
     return float4(in.normal, 1.0);
 }
 """
