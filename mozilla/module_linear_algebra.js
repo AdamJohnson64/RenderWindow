@@ -1,3 +1,5 @@
+// Linear algebra and matrix utilities for 3D graphics
+
 function matCreate() {
   // Return a new identity matrix as a flat array
   return new Float32Array([
@@ -10,7 +12,6 @@ function matCreate() {
 
 function matDeterminant(m) {
   // m is a flat 16-element array
-  // For readability, assign each element
   const m00 = m[0],  m01 = m[1],  m02 = m[2],  m03 = m[3];
   const m10 = m[4],  m11 = m[5],  m12 = m[6],  m13 = m[7];
   const m20 = m[8],  m21 = m[9],  m22 = m[10], m23 = m[11];
@@ -30,56 +31,23 @@ function matInvert(m) {
   const inv = new Float32Array(16);
   const d = matDeterminant(m);
   if (d === 0) return null;
-  // Compute the inverse using the analytic formula for 4x4 matrices
-  // (code omitted for brevity, can use gl-matrix or similar for production)
-  // For now, just return identity for placeholder
   // TODO: Implement full inversion
   for (let i = 0; i < 16; ++i) inv[i] = (i % 5 === 0) ? 1 : 0;
   return inv;
 }
 
 function matLookAt(eye, center, up) {
-  // Standard WebGL right-handed lookAt (column-major)
-  let z = vector3Normalize([
-    eye[0] - center[0],
-    eye[1] - center[1],
-    eye[2] - center[2]
-  ]);
-  let x = vector3Normalize(vector3Cross(up, z));
-  let y = vector3Cross(z, x);
+  // Standard right-handed lookAt matrix
+  const f = vector3Normalize(vector3Sub(center, eye)); // forward
+  const s = vector3Normalize(vector3Cross(f, up));     // right (side)
+  const u = vector3Cross(s, f);                        // up
+
   return new Float32Array([
-    x[0], y[0], z[0], 0,
-    x[1], y[1], z[1], 0,
-    x[2], y[2], z[2], 0,
-    -vector3Dot(x, eye), -vector3Dot(y, eye), -vector3Dot(z, eye), 1
+    s[0],  u[0],  -f[0],  0,
+    s[1],  u[1],  -f[1],  0,
+    s[2],  u[2],  -f[2],  0,
+    -vector3Dot(s, eye), -vector3Dot(u, eye), vector3Dot(f, eye), 1
   ]);
-}
-
-function matPerspective(fov, aspect, near, far) {
-  // Standard WebGL perspective matrix (column-major)
-  const f = 1.0 / Math.tan((fov * Math.PI) / 360.0);
-  const nf = 1 / (near - far);
-  const out = new Float32Array(16);
-  out[0] = f / aspect;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 0;
-
-  out[4] = 0;
-  out[5] = f;
-  out[6] = 0;
-  out[7] = 0;
-
-  out[8] = 0;
-  out[9] = 0;
-  out[10] = (far + near) * nf;
-  out[11] = -1;
-
-  out[12] = 0;
-  out[13] = 0;
-  out[14] = (2 * far * near) * nf;
-  out[15] = 0;
-  return out;
 }
 
 function matMultiply(a, b) {
@@ -97,25 +65,53 @@ function matMultiply(a, b) {
 }
 
 function matProjection(fov, near, far) {
-  const scale = 1 / (Math.tan((fov / 2) * (Math.PI / 180)));
+  // Perspective projection, aspect ratio = 1
+  const f = 1 / Math.tan((fov / 2) * (Math.PI / 180));
   const m = matCreate();
-  m[0] = scale;
-  m[5] = scale;
+  m[0] = f;
+  m[5] = f;
   m[10] = (far + near) / (near - far);
-  m[14] = (2 * far * near) / (near - far);
   m[11] = -1;
+  m[14] = (2 * far * near) / (near - far);
+  m[15] = 0;
+  return m;
+}
+
+function matPerspective(fov, aspect, near, far) {
+  // Standard perspective projection with aspect ratio
+  const f = 1 / Math.tan((fov / 2) * (Math.PI / 180));
+  const m = new Float32Array(16);
+  m[0] = f / aspect;
+  m[1] = 0;
+  m[2] = 0;
+  m[3] = 0;
+
+  m[4] = 0;
+  m[5] = f;
+  m[6] = 0;
+  m[7] = 0;
+
+  m[8] = 0;
+  m[9] = 0;
+  m[10] = (far + near) / (near - far);
+  m[11] = -1;
+
+  m[12] = 0;
+  m[13] = 0;
+  m[14] = (2 * far * near) / (near - far);
   m[15] = 0;
   return m;
 }
 
 function matProjection2(fov, near, far) {
+  // Alternate projection (left-handed)
   const scale = 1 / (Math.tan((fov / 2) * (Math.PI / 180)));
   const m = matCreate();
   m[0] = scale;
   m[5] = scale;
   m[10] = -far / (far - near);
-  m[14] = -far * near / (far - near);
   m[11] = -1;
+  m[14] = -far * near / (far - near);
   m[15] = 0;
   return m;
 }
@@ -157,30 +153,33 @@ function matTranspose(m) {
   return r;
 }
 
+// Vector utilities
 function vector3String(v) {
-  return "[" + v[0].toFixed(2) + ", " + v[1].toFixed(2) + ", " + v[2].toFixed(2) + "]";
+  return `[${v[0].toFixed(2)}, ${v[1].toFixed(2)}, ${v[2].toFixed(2)}]`;
 }
 
 function vector3Add(a, b) {
-  return [a[0] + b[0],
-          a[1] + b[1],
-          a[2] + b[2]];
+  return [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 }
 
-function vector3Cross(a, b) {
-  return [a[1] * b[2] - a[2] * b[1],
-          a[2] * b[0] - a[0] * b[2],
-          a[0] * b[1] - a[1] * b[0]];
+function vector3Sub(a, b) {
+  return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+}
+
+function vector3Mul(a, s) {
+  return [a[0] * s, a[1] * s, a[2] * s];
 }
 
 function vector3Dot(a, b) {
   return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 }
 
-function vector3Mul(a, s) {
-  return [a[0] * s,
-          a[1] * s,
-          a[2] * s];
+function vector3Cross(a, b) {
+  return [
+    a[1] * b[2] - a[2] * b[1],
+    a[2] * b[0] - a[0] * b[2],
+    a[0] * b[1] - a[1] * b[0]
+  ];
 }
 
 function vector3Negate(a) {
@@ -188,12 +187,6 @@ function vector3Negate(a) {
 }
 
 function vector3Normalize(a) {
-  const inv_mag = 1.0 / Math.sqrt(vector3Dot(a, a));
-  return vector3Mul(a, inv_mag);
-}
-
-function vector3Sub(a, b) {
-  return [a[0] - b[0],
-          a[1] - b[1],
-          a[2] - b[2]];
+  const invMag = 1.0 / Math.sqrt(vector3Dot(a, a));
+  return vector3Mul(a, invMag);
 }
