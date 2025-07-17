@@ -61,7 +61,7 @@ function render() {
     mat = matMultiply(model, view);
     mat = matMultiply(mat, projection);
     const uniform_mvp = gl.getUniformLocation(id_program, "mvp");
-    gl.uniformMatrix4fv(uniform_mvp, gl.TRUE, matFlatten(mat));
+    gl.uniformMatrix4fv(uniform_mvp, gl.TRUE, mat); // mat is now a flat array
     renderMesh(parametric_plane);
   }
   // Draw some spheres
@@ -71,7 +71,7 @@ function render() {
       mat = matMultiply(model, view);
       mat = matMultiply(mat, projection);
       const uniform_mvp = gl.getUniformLocation(id_program, "mvp");
-      gl.uniformMatrix4fv(uniform_mvp, gl.TRUE, matFlatten(mat));
+      gl.uniformMatrix4fv(uniform_mvp, gl.TRUE, mat); // mat is now a flat array
       renderMesh(parametric_sphere);
     }
     frame = frame + 0.001;
