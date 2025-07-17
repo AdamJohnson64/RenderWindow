@@ -59,7 +59,7 @@ function createParametric(func, u, v) {
 }
 
 function plane(u, v) {
-  return [u, v, 0];
+  return [u - 0.5, 0, v - 0.5];
 }
 
 function sphere(u, v) {

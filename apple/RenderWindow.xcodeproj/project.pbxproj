@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		A45711692E21B6AA00997A2B /* RenderWindow_iOS_SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45711682E21B6AA00997A2B /* RenderWindow_iOS_SwiftUI.swift */; };
+		A48F09262E28495700F5F489 /* math.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09252E28483700F5F489 /* math.swift */; };
+		A48F09282E284A3000F5F489 /* parametric.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09272E2849BE00F5F489 /* parametric.swift */; };
+		A48F092A2E284F9100F5F489 /* metal.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09292E284F7900F5F489 /* metal.swift */; };
+		A48F092B2E2868A200F5F489 /* math.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09252E28483700F5F489 /* math.swift */; };
+		A48F092C2E2868BD00F5F489 /* metal.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09292E284F7900F5F489 /* metal.swift */; };
+		A48F092D2E2868C400F5F489 /* parametric.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09272E2849BE00F5F489 /* parametric.swift */; };
 		A4D42A602E20713600B2A12B /* RenderWindow_macOS_SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4D42A5F2E20713600B2A12B /* RenderWindow_macOS_SwiftUI.swift */; };
 		A4FE27162E20F2CF0001F401 /* RenderWindow_macOS_AppKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A4ADAC4B2E20BEF1009C84AD /* RenderWindow_macOS_AppKit.m */; };
 /* End PBXBuildFile section */
@@ -15,9 +21,12 @@
 /* Begin PBXFileReference section */
 		A45711682E21B6AA00997A2B /* RenderWindow_iOS_SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderWindow_iOS_SwiftUI.swift; sourceTree = "<group>"; };
 		A45711722E21B6AB00997A2B /* RenderWindow_iOS_SwiftUI.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = RenderWindow_iOS_SwiftUI.plist; sourceTree = "<group>"; };
-		A45D9E262E2725ED00B6F9D5 /* RenderWindow_iOS_SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = RenderWindow_iOS_SwiftUI.app; path = "/Users/adamjohnson/Desktop/RenderWindow/apple/build/Debug-iphoneos/RenderWindow_iOS_SwiftUI.app"; sourceTree = "<absolute>"; };
-		A45D9E272E2725ED00B6F9D5 /* RenderWindow_macOS_AppKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = RenderWindow_macOS_AppKit.app; path = /Users/adamjohnson/Desktop/RenderWindow/apple/build/Debug/RenderWindow_macOS_AppKit.app; sourceTree = "<absolute>"; };
-		A45D9E282E2725ED00B6F9D5 /* RenderWindow_macOS_SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = RenderWindow_macOS_SwiftUI.app; path = /Users/adamjohnson/Desktop/RenderWindow/apple/build/Debug/RenderWindow_macOS_SwiftUI.app; sourceTree = "<absolute>"; };
+		A48F09222E28346500F5F489 /* RenderWindow_iOS_SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RenderWindow_iOS_SwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A48F09232E28346500F5F489 /* RenderWindow_macOS_AppKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RenderWindow_macOS_AppKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A48F09242E28346500F5F489 /* RenderWindow_macOS_SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RenderWindow_macOS_SwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A48F09252E28483700F5F489 /* math.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = math.swift; sourceTree = "<group>"; };
+		A48F09272E2849BE00F5F489 /* parametric.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = parametric.swift; sourceTree = "<group>"; };
+		A48F09292E284F7900F5F489 /* metal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = metal.swift; sourceTree = "<group>"; };
 		A4ADAC4B2E20BEF1009C84AD /* RenderWindow_macOS_AppKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RenderWindow_macOS_AppKit.m; sourceTree = "<group>"; };
 		A4ADAC4D2E20BEF1009C84AD /* RenderWindow_macOS_AppKit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RenderWindow_macOS_AppKit.entitlements; sourceTree = "<group>"; };
 		A4D42A5F2E20713600B2A12B /* RenderWindow_macOS_SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderWindow_macOS_SwiftUI.swift; sourceTree = "<group>"; };
@@ -52,12 +61,18 @@
 		A4D42A532E20713500B2A12B = {
 			isa = PBXGroup;
 			children = (
+				A48F09252E28483700F5F489 /* math.swift */,
+				A48F09292E284F7900F5F489 /* metal.swift */,
+				A48F09272E2849BE00F5F489 /* parametric.swift */,
 				A45711682E21B6AA00997A2B /* RenderWindow_iOS_SwiftUI.swift */,
 				A45711722E21B6AB00997A2B /* RenderWindow_iOS_SwiftUI.plist */,
 				A4ADAC4B2E20BEF1009C84AD /* RenderWindow_macOS_AppKit.m */,
 				A4ADAC4D2E20BEF1009C84AD /* RenderWindow_macOS_AppKit.entitlements */,
 				A4D42A5F2E20713600B2A12B /* RenderWindow_macOS_SwiftUI.swift */,
 				A4D42A652E20713600B2A12B /* RenderWindow_macOS_SwiftUI.entitlements */,
+				A48F09222E28346500F5F489 /* RenderWindow_iOS_SwiftUI.app */,
+				A48F09232E28346500F5F489 /* RenderWindow_macOS_AppKit.app */,
+				A48F09242E28346500F5F489 /* RenderWindow_macOS_SwiftUI.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -78,7 +93,7 @@
 			);
 			name = RenderWindow_iOS_SwiftUI;
 			productName = RenderWindow_iOS_SwiftUI;
-			productReference = A45D9E262E2725ED00B6F9D5 /* RenderWindow_iOS_SwiftUI.app */;
+			productReference = A48F09222E28346500F5F489 /* RenderWindow_iOS_SwiftUI.app */;
 			productType = "com.apple.product-type.application";
 		};
 		A4ADAC3D2E20BEF0009C84AD /* RenderWindow_macOS_AppKit */ = {
@@ -95,7 +110,7 @@
 			);
 			name = RenderWindow_macOS_AppKit;
 			productName = RenderWindow_AppKit;
-			productReference = A45D9E272E2725ED00B6F9D5 /* RenderWindow_macOS_AppKit.app */;
+			productReference = A48F09232E28346500F5F489 /* RenderWindow_macOS_AppKit.app */;
 			productType = "com.apple.product-type.application";
 		};
 		A4D42A5B2E20713600B2A12B /* RenderWindow_macOS_SwiftUI */ = {
@@ -112,7 +127,7 @@
 			);
 			name = RenderWindow_macOS_SwiftUI;
 			productName = CrossWindow;
-			productReference = A45D9E282E2725ED00B6F9D5 /* RenderWindow_macOS_SwiftUI.app */;
+			productReference = A48F09242E28346500F5F489 /* RenderWindow_macOS_SwiftUI.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -186,6 +201,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				A45711692E21B6AA00997A2B /* RenderWindow_iOS_SwiftUI.swift in Sources */,
+				A48F092C2E2868BD00F5F489 /* metal.swift in Sources */,
+				A48F092B2E2868A200F5F489 /* math.swift in Sources */,
+				A48F092D2E2868C400F5F489 /* parametric.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -202,6 +220,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				A4D42A602E20713600B2A12B /* RenderWindow_macOS_SwiftUI.swift in Sources */,
+				A48F092A2E284F9100F5F489 /* metal.swift in Sources */,
+				A48F09262E28495700F5F489 /* math.swift in Sources */,
+				A48F09282E284A3000F5F489 /* parametric.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
