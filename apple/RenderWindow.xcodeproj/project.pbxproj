@@ -16,7 +16,6 @@
 		A48F092B2E2868A200F5F489 /* math.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09252E28483700F5F489 /* math.swift */; };
 		A48F092C2E2868BD00F5F489 /* render.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09292E284F7900F5F489 /* render.swift */; };
 		A48F092D2E2868C400F5F489 /* model_uv.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09272E2849BE00F5F489 /* model_uv.swift */; };
-		A4CD03E42E2A0F22000D27A1 /* ImGui_macOS_SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4CD03E32E2A0F22000D27A1 /* ImGui_macOS_SwiftUI.swift */; };
 		A4D42A602E20713600B2A12B /* RenderWindow_macOS_SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4D42A5F2E20713600B2A12B /* RenderWindow_macOS_SwiftUI.swift */; };
 		A4FE27162E20F2CF0001F401 /* RenderWindow_macOS_AppKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A4ADAC4B2E20BEF1009C84AD /* RenderWindow_macOS_AppKit.m */; };
 /* End PBXBuildFile section */
@@ -33,8 +32,6 @@
 		A48F09292E284F7900F5F489 /* render.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = render.swift; sourceTree = "<group>"; };
 		A4ADAC4B2E20BEF1009C84AD /* RenderWindow_macOS_AppKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RenderWindow_macOS_AppKit.m; sourceTree = "<group>"; };
 		A4ADAC4D2E20BEF1009C84AD /* RenderWindow_macOS_AppKit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RenderWindow_macOS_AppKit.entitlements; sourceTree = "<group>"; };
-		A4CD03E12E2A0F21000D27A1 /* ImGui_macOS_SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImGui_macOS_SwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A4CD03E32E2A0F22000D27A1 /* ImGui_macOS_SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImGui_macOS_SwiftUI.swift; sourceTree = "<group>"; };
 		A4D42A5F2E20713600B2A12B /* RenderWindow_macOS_SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderWindow_macOS_SwiftUI.swift; sourceTree = "<group>"; };
 		A4D42A652E20713600B2A12B /* RenderWindow_macOS_SwiftUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RenderWindow_macOS_SwiftUI.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -48,13 +45,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A4ADAC3B2E20BEF0009C84AD /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A4CD03DE2E2A0F21000D27A1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -78,7 +68,6 @@
 				A48F09272E2849BE00F5F489 /* model_uv.swift */,
 				A48F09292E284F7900F5F489 /* render.swift */,
 				A42A77712E296A68003CD467 /* shader.swift */,
-				A4CD03E32E2A0F22000D27A1 /* ImGui_macOS_SwiftUI.swift */,
 				A45711682E21B6AA00997A2B /* RenderWindow_iOS_SwiftUI.swift */,
 				A45711722E21B6AB00997A2B /* RenderWindow_iOS_SwiftUI.plist */,
 				A4ADAC4B2E20BEF1009C84AD /* RenderWindow_macOS_AppKit.m */,
@@ -88,7 +77,6 @@
 				A48F09222E28346500F5F489 /* RenderWindow_iOS_SwiftUI.app */,
 				A48F09232E28346500F5F489 /* RenderWindow_macOS_AppKit.app */,
 				A48F09242E28346500F5F489 /* RenderWindow_macOS_SwiftUI.app */,
-				A4CD03E12E2A0F21000D27A1 /* ImGui_macOS_SwiftUI.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -129,25 +117,6 @@
 			productReference = A48F09232E28346500F5F489 /* RenderWindow_macOS_AppKit.app */;
 			productType = "com.apple.product-type.application";
 		};
-		A4CD03E02E2A0F21000D27A1 /* ImGui_macOS_SwiftUI */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A4CD03E92E2A0F23000D27A1 /* Build configuration list for PBXNativeTarget "ImGui_macOS_SwiftUI" */;
-			buildPhases = (
-				A4CD03DD2E2A0F21000D27A1 /* Sources */,
-				A4CD03DE2E2A0F21000D27A1 /* Frameworks */,
-				A4CD03DF2E2A0F21000D27A1 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = ImGui_macOS_SwiftUI;
-			packageProductDependencies = (
-			);
-			productName = ImGui_macOS_SwiftUI;
-			productReference = A4CD03E12E2A0F21000D27A1 /* ImGui_macOS_SwiftUI.app */;
-			productType = "com.apple.product-type.application";
-		};
 		A4D42A5B2E20713600B2A12B /* RenderWindow_macOS_SwiftUI */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A4D42A6B2E20713600B2A12B /* Build configuration list for PBXNativeTarget "RenderWindow_macOS_SwiftUI" */;
@@ -172,7 +141,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1640;
+				LastSwiftUpdateCheck = 1430;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					A45711612E21B6AA00997A2B = {
@@ -180,9 +149,6 @@
 					};
 					A4ADAC3D2E20BEF0009C84AD = {
 						CreatedOnToolsVersion = 14.3.1;
-					};
-					A4CD03E02E2A0F21000D27A1 = {
-						CreatedOnToolsVersion = 16.4;
 					};
 					A4D42A5B2E20713600B2A12B = {
 						CreatedOnToolsVersion = 14.3.1;
@@ -202,7 +168,6 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A4CD03E02E2A0F21000D27A1 /* ImGui_macOS_SwiftUI */,
 				A45711612E21B6AA00997A2B /* RenderWindow_iOS_SwiftUI */,
 				A4ADAC3D2E20BEF0009C84AD /* RenderWindow_macOS_AppKit */,
 				A4D42A5B2E20713600B2A12B /* RenderWindow_macOS_SwiftUI */,
@@ -219,13 +184,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A4ADAC3C2E20BEF0009C84AD /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A4CD03DF2E2A0F21000D27A1 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -259,14 +217,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A4FE27162E20F2CF0001F401 /* RenderWindow_macOS_AppKit.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A4CD03DD2E2A0F21000D27A1 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A4CD03E42E2A0F22000D27A1 /* ImGui_macOS_SwiftUI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -403,74 +353,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-			};
-			name = Release;
-		};
-		A4CD03EA2E2A0F23000D27A1 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Org.ImGui-macOS-SwiftUI";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		A4CD03EB2E2A0F23000D27A1 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Org.ImGui-macOS-SwiftUI";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
@@ -672,15 +554,6 @@
 			buildConfigurations = (
 				A4ADAC4F2E20BEF1009C84AD /* Debug */,
 				A4ADAC502E20BEF1009C84AD /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A4CD03E92E2A0F23000D27A1 /* Build configuration list for PBXNativeTarget "ImGui_macOS_SwiftUI" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A4CD03EA2E2A0F23000D27A1 /* Debug */,
-				A4CD03EB2E2A0F23000D27A1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
