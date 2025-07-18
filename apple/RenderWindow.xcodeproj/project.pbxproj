@@ -31,9 +31,7 @@
 		A48F09272E2849BE00F5F489 /* model_uv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = model_uv.swift; sourceTree = "<group>"; };
 		A48F09292E284F7900F5F489 /* render.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = render.swift; sourceTree = "<group>"; };
 		A4ADAC4B2E20BEF1009C84AD /* RenderWindow_macOS_AppKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RenderWindow_macOS_AppKit.m; sourceTree = "<group>"; };
-		A4ADAC4D2E20BEF1009C84AD /* RenderWindow_macOS_AppKit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RenderWindow_macOS_AppKit.entitlements; sourceTree = "<group>"; };
 		A4D42A5F2E20713600B2A12B /* RenderWindow_macOS_SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderWindow_macOS_SwiftUI.swift; sourceTree = "<group>"; };
-		A4D42A652E20713600B2A12B /* RenderWindow_macOS_SwiftUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RenderWindow_macOS_SwiftUI.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,9 +69,7 @@
 				A45711682E21B6AA00997A2B /* RenderWindow_iOS_SwiftUI.swift */,
 				A45711722E21B6AB00997A2B /* RenderWindow_iOS_SwiftUI.plist */,
 				A4ADAC4B2E20BEF1009C84AD /* RenderWindow_macOS_AppKit.m */,
-				A4ADAC4D2E20BEF1009C84AD /* RenderWindow_macOS_AppKit.entitlements */,
 				A4D42A5F2E20713600B2A12B /* RenderWindow_macOS_SwiftUI.swift */,
-				A4D42A652E20713600B2A12B /* RenderWindow_macOS_SwiftUI.entitlements */,
 				A48F09222E28346500F5F489 /* RenderWindow_iOS_SwiftUI.app */,
 				A48F09232E28346500F5F489 /* RenderWindow_macOS_AppKit.app */,
 				A48F09242E28346500F5F489 /* RenderWindow_macOS_SwiftUI.app */,
@@ -259,6 +255,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "Org.RenderWindow-iOS-SwiftUI";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -289,6 +289,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "Org.RenderWindow-iOS-SwiftUI";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -301,7 +305,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = RenderWindow_macOS_AppKit.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
@@ -331,7 +334,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = RenderWindow_macOS_AppKit.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
@@ -470,7 +472,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = RenderWindow_macOS_SwiftUI.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -494,10 +495,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = Org.RenderWindow;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -506,7 +507,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = RenderWindow_macOS_SwiftUI.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -530,10 +530,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = Org.RenderWindow;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
