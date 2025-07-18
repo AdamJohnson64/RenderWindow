@@ -2,33 +2,23 @@ import MetalKit
 import UIKit
 
 class UIViewControllerImpl: UIViewController {
-    var mtkView: MTKView?
-    var renderer: MTKViewDelegate?
+    var mtkView: MTKViewRenderWindow?
 
     override func loadView() {
-        if mtkView == nil {
-            mtkView = MTKView(frame: .zero, device: MTLCreateSystemDefaultDevice())
+        if (mtkView == nil) {
+            mtkView = MTKViewRenderWindow(frame: .zero, device: MTLCreateSystemDefaultDevice())
+            view = mtkView
         }
-        if renderer == nil {
-            renderer = MTKViewDelegateImpl(device: mtkView!.device!)
-        }
-        setupMTKView(view: mtkView!, delegate: renderer!)
-        view = mtkView
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
     }
 }
 
 @main
-class SceneDelegate: UIResponder, UIWindowSceneDelegate, UIApplicationDelegate {
+class UIApplicationImpl: UIApplication, UIApplicationDelegate {
     var window: UIWindow?
-
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        guard let windowScene = (scene as? UIWindowScene) else { return }
-        window = UIWindow(windowScene: windowScene)
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        window = UIWindow()
         window?.rootViewController = UIViewControllerImpl()
         window?.makeKeyAndVisible()
+        return true
     }
 }
