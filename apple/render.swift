@@ -169,6 +169,8 @@ class MTKViewDelegateImpl : NSObject, MTKViewDelegate {
             SIMD3<Float>(matrixView.columns.2.x, matrixView.columns.2.y, matrixView.columns.2.z)
         )
         uniformsFrame.view = simd_normalize(rotation.transpose * cameraForward)
+        // Add the light position (point light)
+        uniformsFrame.light = [25 * cos(frame * 0.73), 10 * (1 - cos(frame * 0.16)), 10 * sin(frame * 0.73)]
         // =======================================
         let uniformsSize = MemoryLayout<Shader.UniformsFrame>.size
         let uniformsBuffer = withUnsafeBytes(of: uniformsFrame) { ptr in

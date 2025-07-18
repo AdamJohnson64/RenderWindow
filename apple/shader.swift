@@ -10,6 +10,7 @@ class Shader {
     struct UniformsFrame {
         var viewProjection: simd_float4x4 = matrix_identity_float4x4
         var view: simd_float3 = simd_float3(0, 0, 0)
+        var light: simd_float3 = simd_float3(0, 0, 0)
     }
 
     struct UniformsInstance {
@@ -21,6 +22,7 @@ class Shader {
 #include <metal_stdlib>
 using namespace metal;
 
+// Vertex input and output structures
 struct VertexIn {
     float3 position [[attribute(0)]];
     float3 normal   [[attribute(1)]];
@@ -29,11 +31,15 @@ struct VertexIn {
 struct VertexOut {
     float4 position [[position]];
     float3 normal;
+    float3 world;
+    float3 color;
 };
 
+// Uniforms for the frame and per-instance
 struct UniformsFrame {
     float4x4 viewProjectionMatrix;
     float3 view;
+    float3 light;
 };
 
 struct UniformsInstance {
@@ -41,89 +47,93 @@ struct UniformsInstance {
     float3 diffuse;
 };
 
+// --- Helper Functions ---
+
+// Compute attenuation based on distance
+float computeAttenuation(float3 lightPos, float3 worldPos, float maxDist) {
+    float dist = length(lightPos - worldPos);
+    return clamp((maxDist - dist) / maxDist, 0.0, 1.0);
+}
+
+// Compute diffuse lighting
 float3 computeDiffuse(float3 normal, float3 lightDir, float3 diffuseColor) {
-    float factor = dot(normal, lightDir);
-    factor = clamp(factor, 0.0, 1.0);
+    float factor = max(dot(normal, lightDir), 0.0);
     return diffuseColor * factor;
 }
 
+// Compute specular lighting
 float3 computeSpecular(float3 normal, float3 lightDir, float3 viewDir, float shininess, float3 specularColor) {
     float3 reflectDir = reflect(-lightDir, normal);
     float factor = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
-    factor = clamp(factor, 0.0, 1.0);
     return specularColor * factor;
 }
 
+// Visualize normal as color
 float3 visualizeNormal(float3 norm) {
-    norm.x = (norm.x + 1) / 2;
-    norm.y = (norm.y + 1) / 2;
-    norm.z = (norm.z + 1) / 2;
-    return norm;
+    return (norm + 1.0) * 0.5;
 }
 
-vertex VertexOut vs_flat(
-    VertexIn in [[stage_in]],
-    constant UniformsFrame& frame [[buffer(1)]],
-    constant UniformsInstance& instance [[buffer(2)]]
-) {
+// --- Vertex Shader Helper ---
+
+VertexOut calculateDefaults(VertexIn in, constant UniformsFrame& frame, constant UniformsInstance& instance) {
     VertexOut out;
-    out.position = frame.viewProjectionMatrix * instance.modelMatrix * float4(in.position, 1.0);
-    float3 light = normalize(float3(1,1,1));
+    float4 worldPos = instance.modelMatrix * float4(in.position, 1.0);
+    out.position = frame.viewProjectionMatrix * worldPos;
+    out.normal = in.normal;
+    out.world = worldPos.xyz;
+    out.color = instance.diffuse;
+    return out;
+}
+
+// --- Shaders ---
+
+vertex VertexOut vs_flat(VertexIn in [[stage_in]],
+                        constant UniformsFrame& frame [[buffer(1)]],
+                        constant UniformsInstance& instance [[buffer(2)]]) {
+    return calculateDefaults(in, frame, instance);
+}
+
+fragment float4 fs_flat(VertexOut in [[stage_in]],
+                        constant UniformsFrame& frame [[buffer(1)]],
+                        constant UniformsInstance& instance [[buffer(2)]]) {
     float3 normal = normalize(in.normal);
-    out.normal = computeDiffuse(normal, light, instance.diffuse);
-    return out;
+    float3 lightDir = normalize(frame.light - in.world);
+    float attenuation = computeAttenuation(frame.light, in.world, 50.0);
+    float3 color = computeDiffuse(normal, lightDir, in.color) * attenuation;
+    return float4(color, 1.0);
 }
 
-fragment float4 fs_flat(
-    VertexOut in [[stage_in]],
-    constant UniformsFrame& frame [[buffer(1)]],
-    constant UniformsInstance& instance [[buffer(2)]]
-) {
-    return float4(in.normal, 1.0);
+vertex VertexOut vs_normal(VertexIn in [[stage_in]],
+                           constant UniformsFrame& frame [[buffer(1)]],
+                           constant UniformsInstance& instance [[buffer(2)]]) {
+    return calculateDefaults(in, frame, instance);
 }
 
-vertex VertexOut vs_normal(
-    VertexIn in [[stage_in]],
-    constant UniformsFrame& frame [[buffer(1)]],
-    constant UniformsInstance& instance [[buffer(2)]]
-) {
-    VertexOut out;
-    out.position = frame.viewProjectionMatrix * instance.modelMatrix * float4(in.position, 1.0);
-    out.normal = visualizeNormal(in.normal);
-    return out;
+fragment float4 fs_normal(VertexOut in [[stage_in]],
+                          constant UniformsFrame& frame [[buffer(1)]],
+                          constant UniformsInstance& instance [[buffer(2)]]) {
+    float attenuation = computeAttenuation(frame.light, in.world, 50.0);
+    float3 color = visualizeNormal(normalize(in.normal));
+    return float4(color * attenuation, 1.0);
 }
 
-fragment float4 fs_normal(
-    VertexOut in [[stage_in]],
-    constant UniformsFrame& frame [[buffer(1)]],
-    constant UniformsInstance& instance [[buffer(2)]]
-) {
-    return float4(in.normal, 1.0);
+vertex VertexOut vs_shiny(VertexIn in [[stage_in]],
+                          constant UniformsFrame& frame [[buffer(1)]],
+                          constant UniformsInstance& instance [[buffer(2)]]) {
+    return calculateDefaults(in, frame, instance);
 }
 
-vertex VertexOut vs_shiny(
-    VertexIn in [[stage_in]],
-    constant UniformsFrame& frame [[buffer(1)]],
-    constant UniformsInstance& instance [[buffer(2)]]
-) {
-    VertexOut out;
-    out.position = frame.viewProjectionMatrix * instance.modelMatrix * float4(in.position, 1.0);
+fragment float4 fs_shiny(VertexOut in [[stage_in]],
+                         constant UniformsFrame& frame [[buffer(1)]],
+                         constant UniformsInstance& instance [[buffer(2)]]) {
     float3 normal = normalize(in.normal);
-    float3 light = normalize(float3(1,1,1));
-    float3 diffuse = instance.diffuse;
-    float3 specular = float3(1, 1, 1);
-    out.normal =
-        computeDiffuse(normal, light, diffuse)
-        + computeSpecular(normal, light, -frame.view, 10.00, specular);
-    return out;
-}
-
-fragment float4 fs_shiny(
-    VertexOut in [[stage_in]],
-    constant UniformsFrame& frame [[buffer(1)]],
-    constant UniformsInstance& instance [[buffer(2)]]
-) {
-    return float4(in.normal, 1.0);
+    float3 lightDir = normalize(frame.light - in.world);
+    float3 viewDir = normalize(-frame.view);
+    float attenuation = computeAttenuation(frame.light, in.world, 50.0);
+    float3 diffuse = computeDiffuse(normal, lightDir, in.color);
+    float3 specular = computeSpecular(normal, lightDir, viewDir, 10.0, float3(1, 1, 1));
+    float3 color = (diffuse + specular) * attenuation;
+    return float4(color, 1.0);
 }
 """
 }
