@@ -7,31 +7,43 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A42A77722E296B30003CD467 /* shader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A42A77712E296A68003CD467 /* shader.swift */; };
-		A42A77732E296B30003CD467 /* shader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A42A77712E296A68003CD467 /* shader.swift */; };
+		A42A77722E296B30003CD467 /* Shader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A42A77712E296A68003CD467 /* Shader.swift */; };
+		A42A77732E296B30003CD467 /* Shader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A42A77712E296A68003CD467 /* Shader.swift */; };
 		A45711692E21B6AA00997A2B /* RenderWindow_iOS_SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45711682E21B6AA00997A2B /* RenderWindow_iOS_SwiftUI.swift */; };
-		A48F09262E28495700F5F489 /* math.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09252E28483700F5F489 /* math.swift */; };
-		A48F09282E284A3000F5F489 /* model_uv.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09272E2849BE00F5F489 /* model_uv.swift */; };
-		A48F092A2E284F9100F5F489 /* render.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09292E284F7900F5F489 /* render.swift */; };
-		A48F092B2E2868A200F5F489 /* math.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09252E28483700F5F489 /* math.swift */; };
-		A48F092C2E2868BD00F5F489 /* render.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09292E284F7900F5F489 /* render.swift */; };
-		A48F092D2E2868C400F5F489 /* model_uv.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09272E2849BE00F5F489 /* model_uv.swift */; };
+		A48F09262E28495700F5F489 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09252E28483700F5F489 /* Math.swift */; };
+		A48F09282E284A3000F5F489 /* ModelUV.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09272E2849BE00F5F489 /* ModelUV.swift */; };
+		A48F092A2E284F9100F5F489 /* Mesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09292E284F7900F5F489 /* Mesh.swift */; };
+		A48F092B2E2868A200F5F489 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09252E28483700F5F489 /* Math.swift */; };
+		A48F092C2E2868BD00F5F489 /* Mesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09292E284F7900F5F489 /* Mesh.swift */; };
+		A48F092D2E2868C400F5F489 /* ModelUV.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F09272E2849BE00F5F489 /* ModelUV.swift */; };
 		A4D42A602E20713600B2A12B /* RenderWindow_macOS_SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4D42A5F2E20713600B2A12B /* RenderWindow_macOS_SwiftUI.swift */; };
+		A4EED2C82E2D8E3D0076A7F4 /* MTKViewScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EED2C72E2D8E2B0076A7F4 /* MTKViewScene.swift */; };
+		A4EED2C92E2D8E3D0076A7F4 /* MTKViewScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EED2C72E2D8E2B0076A7F4 /* MTKViewScene.swift */; };
+		A4EED2CB2E2D8EA80076A7F4 /* MTKViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EED2CA2E2D8EA30076A7F4 /* MTKViewTest.swift */; };
+		A4EED2CC2E2D8EA80076A7F4 /* MTKViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EED2CA2E2D8EA30076A7F4 /* MTKViewTest.swift */; };
+		A4EED2CE2E2D8EDA0076A7F4 /* Instance.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EED2CD2E2D8ED80076A7F4 /* Instance.swift */; };
+		A4EED2CF2E2D8EDA0076A7F4 /* Instance.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EED2CD2E2D8ED80076A7F4 /* Instance.swift */; };
+		A4EED2D12E2D8EFE0076A7F4 /* Material.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EED2D02E2D8EF80076A7F4 /* Material.swift */; };
+		A4EED2D22E2D8EFE0076A7F4 /* Material.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EED2D02E2D8EF80076A7F4 /* Material.swift */; };
 		A4FE27162E20F2CF0001F401 /* RenderWindow_macOS_AppKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A4ADAC4B2E20BEF1009C84AD /* RenderWindow_macOS_AppKit.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A42A77712E296A68003CD467 /* shader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = shader.swift; sourceTree = "<group>"; };
+		A42A77712E296A68003CD467 /* Shader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shader.swift; sourceTree = "<group>"; };
 		A45711682E21B6AA00997A2B /* RenderWindow_iOS_SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderWindow_iOS_SwiftUI.swift; sourceTree = "<group>"; };
 		A45711722E21B6AB00997A2B /* RenderWindow_iOS_SwiftUI.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = RenderWindow_iOS_SwiftUI.plist; sourceTree = "<group>"; };
 		A48F09222E28346500F5F489 /* RenderWindow_iOS_SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RenderWindow_iOS_SwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A48F09232E28346500F5F489 /* RenderWindow_macOS_AppKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RenderWindow_macOS_AppKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A48F09242E28346500F5F489 /* RenderWindow_macOS_SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RenderWindow_macOS_SwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A48F09252E28483700F5F489 /* math.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = math.swift; sourceTree = "<group>"; };
-		A48F09272E2849BE00F5F489 /* model_uv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = model_uv.swift; sourceTree = "<group>"; };
-		A48F09292E284F7900F5F489 /* render.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = render.swift; sourceTree = "<group>"; };
+		A48F09252E28483700F5F489 /* Math.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Math.swift; sourceTree = "<group>"; };
+		A48F09272E2849BE00F5F489 /* ModelUV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelUV.swift; sourceTree = "<group>"; };
+		A48F09292E284F7900F5F489 /* Mesh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mesh.swift; sourceTree = "<group>"; };
 		A4ADAC4B2E20BEF1009C84AD /* RenderWindow_macOS_AppKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RenderWindow_macOS_AppKit.m; sourceTree = "<group>"; };
 		A4D42A5F2E20713600B2A12B /* RenderWindow_macOS_SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderWindow_macOS_SwiftUI.swift; sourceTree = "<group>"; };
+		A4EED2C72E2D8E2B0076A7F4 /* MTKViewScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTKViewScene.swift; sourceTree = "<group>"; };
+		A4EED2CA2E2D8EA30076A7F4 /* MTKViewTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTKViewTest.swift; sourceTree = "<group>"; };
+		A4EED2CD2E2D8ED80076A7F4 /* Instance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Instance.swift; sourceTree = "<group>"; };
+		A4EED2D02E2D8EF80076A7F4 /* Material.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Material.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,10 +74,14 @@
 		A4D42A532E20713500B2A12B = {
 			isa = PBXGroup;
 			children = (
-				A48F09252E28483700F5F489 /* math.swift */,
-				A48F09272E2849BE00F5F489 /* model_uv.swift */,
-				A48F09292E284F7900F5F489 /* render.swift */,
-				A42A77712E296A68003CD467 /* shader.swift */,
+				A4EED2CD2E2D8ED80076A7F4 /* Instance.swift */,
+				A4EED2D02E2D8EF80076A7F4 /* Material.swift */,
+				A48F09252E28483700F5F489 /* Math.swift */,
+				A48F09292E284F7900F5F489 /* Mesh.swift */,
+				A48F09272E2849BE00F5F489 /* ModelUV.swift */,
+				A4EED2CA2E2D8EA30076A7F4 /* MTKViewTest.swift */,
+				A4EED2C72E2D8E2B0076A7F4 /* MTKViewScene.swift */,
+				A42A77712E296A68003CD467 /* Shader.swift */,
 				A45711682E21B6AA00997A2B /* RenderWindow_iOS_SwiftUI.swift */,
 				A45711722E21B6AB00997A2B /* RenderWindow_iOS_SwiftUI.plist */,
 				A4ADAC4B2E20BEF1009C84AD /* RenderWindow_macOS_AppKit.m */,
@@ -200,11 +216,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A42A77722E296B30003CD467 /* shader.swift in Sources */,
+				A4EED2CC2E2D8EA80076A7F4 /* MTKViewTest.swift in Sources */,
+				A4EED2D12E2D8EFE0076A7F4 /* Material.swift in Sources */,
+				A42A77722E296B30003CD467 /* Shader.swift in Sources */,
 				A45711692E21B6AA00997A2B /* RenderWindow_iOS_SwiftUI.swift in Sources */,
-				A48F092C2E2868BD00F5F489 /* render.swift in Sources */,
-				A48F092B2E2868A200F5F489 /* math.swift in Sources */,
-				A48F092D2E2868C400F5F489 /* model_uv.swift in Sources */,
+				A48F092C2E2868BD00F5F489 /* Mesh.swift in Sources */,
+				A48F092B2E2868A200F5F489 /* Math.swift in Sources */,
+				A48F092D2E2868C400F5F489 /* ModelUV.swift in Sources */,
+				A4EED2CE2E2D8EDA0076A7F4 /* Instance.swift in Sources */,
+				A4EED2C92E2D8E3D0076A7F4 /* MTKViewScene.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -220,11 +240,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A42A77732E296B30003CD467 /* shader.swift in Sources */,
+				A4EED2CB2E2D8EA80076A7F4 /* MTKViewTest.swift in Sources */,
+				A4EED2D22E2D8EFE0076A7F4 /* Material.swift in Sources */,
+				A42A77732E296B30003CD467 /* Shader.swift in Sources */,
 				A4D42A602E20713600B2A12B /* RenderWindow_macOS_SwiftUI.swift in Sources */,
-				A48F092A2E284F9100F5F489 /* render.swift in Sources */,
-				A48F09262E28495700F5F489 /* math.swift in Sources */,
-				A48F09282E284A3000F5F489 /* model_uv.swift in Sources */,
+				A48F092A2E284F9100F5F489 /* Mesh.swift in Sources */,
+				A48F09262E28495700F5F489 /* Math.swift in Sources */,
+				A48F09282E284A3000F5F489 /* ModelUV.swift in Sources */,
+				A4EED2CF2E2D8EDA0076A7F4 /* Instance.swift in Sources */,
+				A4EED2C82E2D8E3D0076A7F4 /* MTKViewScene.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
