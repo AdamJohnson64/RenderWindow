@@ -849,6 +849,12 @@ def mat_print(m: List[List]) -> None:
         print(" ".join(str(elem) for elem in row))
 
 
+def mat_smart_print(m: List[List]) -> None:
+    """Print a matrix to the console using smart formatting for expressions."""
+    for row in m:
+        print(" ".join(_smart_str(elem) for elem in row))
+
+
 def mat_python(m: List[List]) -> None:
     """Print a matrix in Python list format."""
     print(m)
@@ -925,6 +931,73 @@ def mat_symbolic(size: int) -> List[List]:
 def roughly_equal(a: float, b: float, tolerance: float = 1e-10) -> bool:
     """Check if two floats are approximately equal."""
     return abs(a - b) < tolerance
+
+
+def _get_precedence(operator_type) -> int:
+    """Get the precedence level of an operator (higher = tighter binding)."""
+    if operator_type == Negate:
+        return 4  # Highest precedence
+    elif operator_type in (Multiply, Divide):
+        return 3
+    elif operator_type in (Add, Subtract):
+        return 2
+    else:
+        return 1  # Default low precedence
+
+
+def _needs_parentheses(node, parent_operator_type=None) -> bool:
+    """Determine if a node needs parentheses when printed under a parent operator."""
+    if not isinstance(node, (UnaryOperator, BinaryOperator)):
+        return False
+    
+    if parent_operator_type is None:
+        return False
+    
+    node_precedence = _get_precedence(type(node))
+    parent_precedence = _get_precedence(parent_operator_type)
+    
+    # Need parentheses if node has lower precedence than parent
+    if node_precedence < parent_precedence:
+        return True
+    
+    # For same precedence, need parentheses for non-commutative operations
+    if node_precedence == parent_precedence:
+        if parent_operator_type in (Subtract, Divide):
+            # For subtraction and division, right operand needs parentheses
+            # if it's a binary operator of same precedence
+            if isinstance(node, BinaryOperator):
+                return True
+    
+    return False
+
+
+def _smart_str(node, parent_operator_type=None) -> str:
+    """Convert a node to string with minimal parentheses based on precedence."""
+    if isinstance(node, MatrixElement):
+        return str(node)
+    elif isinstance(node, (int, float)):
+        return str(node)
+    elif isinstance(node, UnaryOperator):
+        operand_str = _smart_str(node.lhs, type(node))
+        # Unary operators don't need parentheses around their operand
+        return f"{node.symbol()}{operand_str}"
+    elif isinstance(node, BinaryOperator):
+        lhs_str = _smart_str(node.lhs, type(node))
+        rhs_str = _smart_str(node.rhs, type(node))
+        result = f"{lhs_str}{node.symbol()}{rhs_str}"
+        
+        # Add parentheses if needed
+        if _needs_parentheses(node, parent_operator_type):
+            result = f"({result})"
+        
+        return result
+    else:
+        return str(node)
+
+
+def smart_print(node: Any) -> None:
+    """Print a node with minimal parentheses based on operator precedence."""
+    print(_smart_str(node))
 
 
 # =============================================================================
@@ -1572,6 +1645,56 @@ def test_matrix_elementwise_simplify():
     print(f"Original: {m}")
     print(f"Simplified: {simplified}")
     return simplified == expected
+
+
+@decorate_test
+def test_smart_print():
+    """Test smart printing with precedence rules to minimize parentheses."""
+    # Test various expressions to show precedence handling
+    A = MatrixElement(0, 0, "m")
+    B = MatrixElement(1, 1, "m")
+    
+    # Test 1: Addition and multiplication precedence
+    expr1 = Add(Multiply(A, 2), Multiply(B, 3))
+    print(f"Expression 1: {expr1}")
+    print(f"Smart print: ", end="")
+    smart_print(expr1)
+    # Should print: m[0][0]*2 + m[1][1]*3 (no parentheses needed)
+    
+    # Test 2: Subtraction with multiplication
+    expr2 = Subtract(Multiply(A, 5), Multiply(B, 2))
+    print(f"Expression 2: {expr2}")
+    print(f"Smart print: ", end="")
+    smart_print(expr2)
+    # Should print: m[0][0]*5 - m[1][1]*2 (no parentheses needed)
+    
+    # Test 3: Division with addition
+    expr3 = Divide(Add(A, B), 2)
+    print(f"Expression 3: {expr3}")
+    print(f"Smart print: ", end="")
+    smart_print(expr3)
+    # Should print: (m[0][0] + m[1][1])/2 (parentheses needed)
+    
+    # Test 4: Complex nested expression
+    expr4 = Add(Multiply(A, Add(B, 1)), Subtract(5, Multiply(B, 2)))
+    print(f"Expression 4: {expr4}")
+    print(f"Smart print: ", end="")
+    smart_print(expr4)
+    # Should print: m[0][0]*(m[1][1] + 1) + 5 - m[1][1]*2
+    
+    # Test 5: Unary negation
+    expr5 = Negate(Add(A, B))
+    print(f"Expression 5: {expr5}")
+    print(f"Smart print: ", end="")
+    smart_print(expr5)
+    # Should print: -(m[0][0] + m[1][1]) (parentheses needed)
+    
+    # Test 6: Matrix with smart printing
+    matrix = [[Add(A, B), Multiply(A, 2)], [Subtract(B, A), Divide(A, B)]]
+    print(f"Matrix with smart printing:")
+    mat_smart_print(matrix)
+    
+    return True
 
 
 # =============================================================================
