@@ -1,0 +1,56 @@
+const glShaderVertex = `#version 300 es
+in vec3 pos;
+in vec3 nor;
+out highp vec3 nor2;
+out highp vec2 TexCoord;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+uniform mat4 modelview;
+uniform mat4 viewprojection;
+uniform mat4 modelviewprojection;
+uniform float time;
+
+void main(void) {
+  gl_Position = modelviewprojection * vec4(pos, 1.0);
+  nor2 = nor;
+  TexCoord = vec2(gl_Position.x, gl_Position.z) / 10.0;
+}
+`;
+
+const glShaderFragment = `#version 300 es
+in highp vec3 nor2;
+in highp vec2 TexCoord;
+
+uniform sampler2D Texture;
+
+out highp vec4 FragColor;
+
+void main(void) {
+  highp float illumination = dot(nor2, vec3(0.0, 1.0, 0.0));
+  FragColor = vec4(texture(Texture, TexCoord).rgb * illumination, 1.0);
+}
+`;
+
+function glCompileShader(type, code, name) {
+  const id_shader = gl.createShader(type);
+  gl.shaderSource(id_shader, code);
+  gl.compileShader(id_shader);
+  if (!gl.getShaderParameter(id_shader, gl.COMPILE_STATUS)) {
+    const error = name +" Shader Compiler Error: " + gl.getShaderInfoLog(id_shader)
+    gl.deleteShader(id_shader);
+    throw new Error(error);
+  }
+  return id_shader;
+}
+
+function glCompileProgram(code_vertex, code_fragment) {
+  const id_program = gl.createProgram();
+  const id_shader_vertex = glCompileShader(gl.VERTEX_SHADER, code_vertex, "Vertex");
+  const id_shader_fragment = glCompileShader(gl.FRAGMENT_SHADER, code_fragment, "Fragment");
+  gl.attachShader(id_program, id_shader_vertex);
+  gl.attachShader(id_program, id_shader_fragment);
+  gl.linkProgram(id_program);
+  return id_program;
+}

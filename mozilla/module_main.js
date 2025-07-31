@@ -1,83 +1,101 @@
-const canvas = document.querySelector("#gl-canvas");
-const gl = canvas.getContext("webgl");
+const canvasGL = document.querySelector("#gl-canvas");
+const gl = canvasGL.getContext("webgl2");
 if (gl === null) {
-	alert("WebGL Unavailable.");
 	throw new Error();
 }
 
-const code_vertex = `#version 100
-attribute vec3 pos;
-attribute vec3 nor;
-varying highp vec3 nor2;
-uniform mat4 mvp;
+const canvasTexture = document.querySelector("#gl-texture");
+const ctx = canvasTexture.getContext("2d");
+ctx.fillStyle = "red";
+ctx.fillRect(0, 0, 256, 256);
+ctx.fillStyle = "green";
+ctx.fillRect(16, 16, 256 - 32, 256 - 32);
+ctx.fillStyle = "black";
+ctx.moveTo(0, 0);
+ctx.lineTo(256, 256);
+ctx.moveTo(256, 0);
+ctx.lineTo(0, 256);
+ctx.stroke();
+ctx.font = "bold 48px serif";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+ctx.fillText("Texture", 128, 128);
 
-void main(void) {
-  gl_Position = mvp * vec4(pos.x, pos.y, pos.z, 1.0);
-  nor2 = nor + vec3(0.5, 0.5, 0.5);
-}
-`;
+///////////////////////////////////////////////////////////////////////////////
+// Create the default GLSL program from vertex and fragment shaders
+let glProgramDefault = glCompileProgram(glShaderVertex, glShaderFragment);
+const glMeshPlane = glCreateParametric(plane, 20, 20);
+const glMeshSphere = glCreateParametric(sphere, 20, 20);
+let frame = 0
 
-const code_fragment = `#version 100
-varying highp vec3 nor2;
+///////////////////////////////////////////////////////////////////////////////
+// Create the texture from the HTML5 canvas element
+const glTextureDefault = gl.createTexture();
+gl.bindTexture(gl.TEXTURE_2D, glTextureDefault);
+gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvasTexture);
+gl.generateMipmap(gl.TEXTURE_2D);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 
-void main(void) {
-  gl_FragColor = vec4(nor2.x, nor2.y, nor2.z, 1.0);
-}
-`;
-
-const id_program = compileProgram(code_vertex, code_fragment);
-const parametric_plane = createParametric(plane, 20, 20);
-const parametric_sphere = createParametric(sphere, 20, 20);
-var frame = 0
-
-function renderMesh(parametric) {
-  gl.useProgram(id_program);
-  // Position
-  gl.bindBuffer(gl.ARRAY_BUFFER, parametric.id_vertex);
-  gl.enableVertexAttribArray(0);
-  gl.vertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, 12, 0);
-  // Normal
-  gl.bindBuffer(gl.ARRAY_BUFFER, parametric.id_normal);
-  gl.enableVertexAttribArray(1);
-  gl.vertexAttribPointer(1, 3, gl.FLOAT, gl.FALSE, 12, 0);
-  // Draw
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, parametric.id_index);
-  gl.drawElements(gl.TRIANGLES, 3 * parametric.triangle_count, gl.UNSIGNED_SHORT, 0);
-}
-
-function render() {
+function glRender() {
+  ////////////////////////////////////////
+  // Clean up the framebuffer
   //gl.clearColor(Math.random(), Math.random(), Math.random(), 1.0);
   gl.clearColor(0, 0, 0, 1.0);
   gl.clearDepth(1.0);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   gl.enable(gl.DEPTH_TEST);
   gl.depthFunc(gl.LESS);
-  var view = matLookAt([25 * Math.cos(frame), 10 * (1 - Math.cos(frame * 0.2)), 10 * Math.sin(frame)],[0,0,0],[0,1,0])
-  var projection = matProjection(90, 0.001, 100.0);
+  ////////////////////////////////////////
+  // Begin scene
+  gl.useProgram(glProgramDefault);
+  let uniforms = getTransformEmpty();
+  setUniformTime(uniforms, frame);
+  setTransformProjection(uniforms, matProjection(90, 0.001, 100.0));
+  setTransformView(uniforms, matLookAt([25 * Math.cos(frame), 10 * (1 - Math.cos(frame * 0.2)), 10 * Math.sin(frame)],[0,0,0],[0,1,0]));
   // Draw a plane
   {
-    var model = matTranslate(0, -6, 0);
-    model = matMultiply(model, matScale(50, 1, 50));
-    mat = matMultiply(model, view);
-    mat = matMultiply(mat, projection);
-    const uniform_mvp = gl.getUniformLocation(id_program, "mvp");
-    gl.uniformMatrix4fv(uniform_mvp, gl.TRUE, mat); // mat is now a flat array
-    renderMesh(parametric_plane);
+    setTransformModel(uniforms, matMultiply(matTranslate(0, -6, 0), matScale(200, 1, 200)));
+    glSetUniforms(uniforms);
+    glRenderMesh(glMeshPlane);
   }
   // Draw some spheres
-  for (var z = -5; z <= 5; ++z) {
-    for (var y = -5; y <= 5; ++y) {
-      for (var x = -5; x <= 5; ++x) {
-        const model = matTranslate(x, y, z);
-        mat = matMultiply(model, view);
-        mat = matMultiply(mat, projection);
-        const uniform_mvp = gl.getUniformLocation(id_program, "mvp");
-        gl.uniformMatrix4fv(uniform_mvp, gl.TRUE, mat); // mat is now a flat array
-        renderMesh(parametric_sphere);
+  for (let z = -5; z <= 5; ++z) {
+    for (let y = -5; y <= 5; ++y) {
+      for (let x = -5; x <= 5; ++x) {
+        setTransformModel(uniforms, matTranslate(x, y, z));
+        glSetUniforms(uniforms);
+        glRenderMesh(glMeshSphere);
       }
     }  
   }
+  // End Scene
+  ////////////////////////////////////////
   frame = frame + 0.01;
 }
 
-setInterval(render, 1000 / 60);
+///////////////////////////////////////////////////////////////////////////////
+// Install event handler to process shaders
+const codeedit_vertex = document.querySelector("#gl-vertexshader");
+const codeedit_fragment = document.querySelector("#gl-fragmentshader");
+const codeedit_error = document.querySelector("#gl-error");
+
+function update() {
+  try {
+    glProgramDefault = glCompileProgram(codeedit_vertex.value, codeedit_fragment.value);
+    codeedit_error.value = "Success"
+  } catch (e) {
+    codeedit_error.value = e;
+  }
+}
+
+codeedit_vertex.addEventListener('input', update);
+codeedit_fragment.addEventListener('input', update);
+codeedit_vertex.value = glShaderVertex;
+codeedit_fragment.value = glShaderFragment;
+update();
+///////////////////////////////////////////////////////////////////////////////
+
+setInterval(glRender, 1000 / 60);

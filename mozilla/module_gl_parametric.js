@@ -1,4 +1,8 @@
-function createParametricVector3(func, in_u, in_v) {
+////////////////////////////////////////////////////////////////////////////////
+// GL Parametric Mesh Construction
+////////////////////////////////////////////////////////////////////////////////
+
+function glCreateParametricVector3(func, in_u, in_v) {
   const steps_u = in_u + 1;
   const steps_v = in_v + 1;
   const vec = new Float32Array(3 * steps_u * steps_v);
@@ -17,7 +21,7 @@ function createParametricVector3(func, in_u, in_v) {
   return id;
 }
 
-function createaParametricIndices(func, in_u, in_v) {
+function glCreateParametricIndices(func, in_u, in_v) {
   const steps_u = in_u + 1;
   const steps_v = in_v + 1;
   const vec = new Int16Array(2 * 3 * in_u * in_v);
@@ -46,25 +50,14 @@ function computeNormal(func, u, v) {
   return t;
 };
 
-function createParametric(func, u, v) {
+function glCreateParametric(func, u, v) {
   const norm = function(u2, v2) {
     return computeNormal(func, u2, v2);
   }
   return {
-    id_vertex: createParametricVector3(func, u, v),
-    id_normal: createParametricVector3(norm, u, v),
-    id_index: createaParametricIndices(func, u, v),
+    id_vertex: glCreateParametricVector3(func, u, v),
+    id_normal: glCreateParametricVector3(norm, u, v),
+    id_index: glCreateParametricIndices(func, u, v),
     triangle_count: 2 * u * v,
   };
-}
-
-function plane(u, v) {
-  return [u - 0.5, 0, v - 0.5];
-}
-
-function sphere(u, v) {
-  const angle_u = (2 * Math.PI) * u;
-  const angle_v = (1 * Math.PI) * v;
-  const scale = Math.sin(angle_v);
-  return [scale * Math.cos(angle_u), Math.cos(angle_v), scale * Math.sin(angle_u)];
 }
