@@ -21,6 +21,24 @@ function glCreateParametricVector3(func, in_u, in_v) {
   return id;
 }
 
+function glCreateParametricTexcoord(in_u, in_v) {
+  const steps_u = in_u + 1;
+  const steps_v = in_v + 1;
+  const vec = new Float32Array(2 * steps_u * steps_v);
+  for (let v = 0; v < steps_v; ++v) {
+    for (let u = 0; u < steps_u; ++u) {
+      const base = 2 * (u + v * steps_u);
+      const point = [u / in_u, v / in_v];
+      vec[base + 0] = point[0];
+      vec[base + 1] = point[1];
+    }
+  }
+  const id = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, id);
+  gl.bufferData(gl.ARRAY_BUFFER, vec, gl.STATIC_DRAW);
+  return id;
+}
+
 function glCreateParametricIndices(func, in_u, in_v) {
   const steps_u = in_u + 1;
   const steps_v = in_v + 1;
@@ -57,6 +75,7 @@ function glCreateParametric(func, u, v) {
   return {
     id_vertex: glCreateParametricVector3(func, u, v),
     id_normal: glCreateParametricVector3(norm, u, v),
+    id_texcoord: glCreateParametricTexcoord(u, v),
     id_index: glCreateParametricIndices(func, u, v),
     triangle_count: 2 * u * v,
   };

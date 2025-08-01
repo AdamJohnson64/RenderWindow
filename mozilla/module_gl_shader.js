@@ -1,8 +1,9 @@
 const glShaderVertex = `#version 300 es
-in vec3 pos;
-in vec3 nor;
-out highp vec3 nor2;
-out highp vec2 TexCoord;
+layout(location = 0) in vec3 inPos;
+layout(location = 1) in vec3 inNor;
+layout(location = 2) in vec2 inUV0;
+out highp vec3 outNor;
+out highp vec2 outUV0;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -13,23 +14,24 @@ uniform mat4 modelviewprojection;
 uniform float time;
 
 void main(void) {
-  gl_Position = modelviewprojection * vec4(pos, 1.0);
-  nor2 = nor;
-  TexCoord = vec2(gl_Position.x, gl_Position.z) / 10.0;
+  gl_Position = modelviewprojection * vec4(inPos, 1.0);
+  outNor = inNor;
+  outUV0 = inUV0;
 }
 `;
 
 const glShaderFragment = `#version 300 es
-in highp vec3 nor2;
-in highp vec2 TexCoord;
+in highp vec3 outNor;
+in highp vec2 outUV0;
 
 uniform sampler2D Texture;
 
 out highp vec4 FragColor;
 
 void main(void) {
-  highp float illumination = dot(nor2, vec3(0.0, 1.0, 0.0));
-  FragColor = vec4(texture(Texture, TexCoord).rgb * illumination, 1.0);
+  highp float dotL = clamp(dot(outNor, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);
+  highp float illumination = clamp(dotL + 0.5, 0.0, 1.0);
+  FragColor = vec4(texture(Texture, outUV0).rgb * illumination, 1.0);
 }
 `;
 

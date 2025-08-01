@@ -43,8 +43,8 @@ function glRender() {
   ////////////////////////////////////////
   // Clean up the framebuffer
   //gl.clearColor(Math.random(), Math.random(), Math.random(), 1.0);
-  gl.clearColor(0, 0, 0, 1.0);
-  gl.clearDepth(1.0);
+  gl.clearColor(0, 0, 0, 0);
+  gl.clearDepth(1);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   gl.enable(gl.DEPTH_TEST);
   gl.depthFunc(gl.LESS);
@@ -57,7 +57,7 @@ function glRender() {
   setTransformView(uniforms, matLookAt([25 * Math.cos(frame), 10 * (1 - Math.cos(frame * 0.2)), 10 * Math.sin(frame)],[0,0,0],[0,1,0]));
   // Draw a plane
   {
-    setTransformModel(uniforms, matMultiply(matTranslate(0, -6, 0), matScale(200, 1, 200)));
+    setTransformModel(uniforms, matMultiply(matScale(50, 1, 50), matTranslate(0, -6, 0)));
     glSetUniforms(uniforms);
     glRenderMesh(glMeshPlane);
   }
@@ -71,6 +71,10 @@ function glRender() {
       }
     }  
   }
+  // Draw a big sphere on top
+  setTransformModel(uniforms, matMultiply(matScale(5, 5, 5), matTranslate(0, 10, 0)));
+  glSetUniforms(uniforms);
+  glRenderMesh(glMeshSphere);
   // End Scene
   ////////////////////////////////////////
   frame = frame + 0.01;
