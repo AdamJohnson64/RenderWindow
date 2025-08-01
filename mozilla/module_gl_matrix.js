@@ -89,20 +89,20 @@ function setUniformTime(uniforms, time) {
   uniforms.time = time;
 }
 
-function glSetMatrix(name, matrix) {
-    const uniform = gl.getUniformLocation(glProgramDefault, name);
+function glSetMatrix(program, name, matrix) {
+    const uniform = gl.getUniformLocation(program, name);
     gl.uniformMatrix4fv(uniform, gl.TRUE, matrix);
     return matrix
 }
 
-function glSetUniforms(uniforms) {
+function glSetUniforms(program, uniforms) {
   //console.log(uniforms);
-  glSetMatrix("model", getTransformModel(uniforms));
-  glSetMatrix("view", getTransformView(uniforms));
-  glSetMatrix("projection", getTransformProjection(uniforms));
-  glSetMatrix("modelview", getTransformModelView(uniforms));
-  glSetMatrix("viewprojection", getTransformViewProjection(uniforms));
-  glSetMatrix("modelviewprojection", getTransformModelViewProjection(uniforms));
+  glSetMatrix(program, "model", getTransformModel(uniforms));
+  glSetMatrix(program, "view", getTransformView(uniforms));
+  glSetMatrix(program, "projection", getTransformProjection(uniforms));
+  glSetMatrix(program, "modelview", getTransformModelView(uniforms));
+  glSetMatrix(program, "viewprojection", getTransformViewProjection(uniforms));
+  glSetMatrix(program, "modelviewprojection", getTransformModelViewProjection(uniforms));
   const uniform = gl.getUniformLocation(glProgramDefault, "time");
   gl.uniform1f(uniform, getUniformTime(uniforms));
 }

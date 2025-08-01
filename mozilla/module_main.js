@@ -23,7 +23,13 @@ ctx.fillText("Texture", 128, 128);
 
 ///////////////////////////////////////////////////////////////////////////////
 // Create the default GLSL program from vertex and fragment shaders
-let glProgramDefault = glCompileProgram(glShaderVertex, glShaderFragment);
+let glProgramDefault   = glCompileProgram(glShaderVertex, glShaderFragment);
+let glProgramBitangent = glCompileProgram(glShaderVertex, glShaderFragmentBitangent);
+let glProgramNormal    = glCompileProgram(glShaderVertex, glShaderFragmentNormal);
+let glProgramTangent   = glCompileProgram(glShaderVertex, glShaderFragmentTangent);
+
+///////////////////////////////////////////////////////////////////////////////
+// Create the scene objects
 const glMeshPlane = glCreateParametric(getParametricPlane(), 20, 20);
 const glMeshSphere = glCreateParametric(getParametricSphere(), 20, 20);
 const glMeshTorus = glCreateParametric(getParametricTorus(10, 1), 50, 50);
@@ -40,18 +46,10 @@ gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 
-function glRender() {
-  ////////////////////////////////////////
-  // Clean up the framebuffer
-  //gl.clearColor(Math.random(), Math.random(), Math.random(), 1.0);
-  gl.clearColor(0, 0, 0, 0);
-  gl.clearDepth(1);
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  gl.enable(gl.DEPTH_TEST);
-  gl.depthFunc(gl.LESS);
+function glRenderScene(program) {
   ////////////////////////////////////////
   // Begin scene
-  gl.useProgram(glProgramDefault);
+  gl.useProgram(program);
   let uniforms = getTransformEmpty();
   setUniformTime(uniforms, frame);
   setTransformProjection(uniforms, matProjection(90, 0.001, 100.0));
@@ -59,30 +57,61 @@ function glRender() {
   // Draw a plane
   {
     setTransformModel(uniforms, matMultiply(matScale(50, 1, 50), matTranslate(0, -6, 0)));
-    glSetUniforms(uniforms);
+    glSetUniforms(program, uniforms);
     glRenderMesh(glMeshPlane);
   }
   // Draw some spheres
-  for (let z = -5; z <= 5; ++z) {
-    for (let y = -5; y <= 5; ++y) {
-      for (let x = -5; x <= 5; ++x) {
+  for (let z = -5; z <= 5; z += 2) {
+    for (let y = -5; y <= 5; y += 2) {
+      for (let x = -5; x <= 5; x += 2) {
         setTransformModel(uniforms, matTranslate(x, y, z));
-        glSetUniforms(uniforms);
+        glSetUniforms(program, uniforms);
         glRenderMesh(glMeshSphere);
       }
     }  
   }
   // Draw a big sphere on top
   setTransformModel(uniforms, matMultiply(matScale(5, 5, 5), matTranslate(0, 10, 0)));
-  glSetUniforms(uniforms);
+  glSetUniforms(program, uniforms);
   glRenderMesh(glMeshSphere);
   // Draw a torus
   setTransformModel(uniforms, matTranslate(0, 1, 0));
-  glSetUniforms(uniforms);
+  glSetUniforms(program, uniforms);
   glRenderMesh(glMeshTorus);
   // End Scene
   ////////////////////////////////////////
+}
+
+function glRenderCanvas() {
+  ////////////////////////////////////////
+  // Clean up the framebuffer
+  //gl.clearColor(Math.random(), Math.random(), Math.random(), 1.0);
+  gl.enable(gl.DEPTH_TEST);
+  gl.depthFunc(gl.LESS);
+
+  // Render main view
+  gl.viewport(0, 0, 512, 512);
+  gl.clearColor(0, 0, 0, 0);
+  gl.clearDepth(1);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  glRenderScene(glProgramDefault);
+
+  // Render debug view 1 (Tangent)
+  gl.viewport(512, 256, 256, 256);
+  glRenderScene(glProgramTangent);
+
+  // Render debug view 2 (Bitngent)
+  gl.viewport(768, 256, 256, 256);
+  glRenderScene(glProgramBitangent);
+
+  // Render debug view 3 (Normal)
+  gl.viewport(512, 0, 256, 256);
+  glRenderScene(glProgramNormal);
   frame = frame + 0.01;
+
+  // Render debug view 4 (Default)
+  gl.viewport(768, 0, 256, 256);
+  glRenderScene(glProgramDefault);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -107,4 +136,4 @@ codeedit_fragment.value = glShaderFragment;
 update();
 ///////////////////////////////////////////////////////////////////////////////
 
-setInterval(glRender, 1000 / 30);
+setInterval(glRenderCanvas, 1000 / 15);
