@@ -2,44 +2,31 @@
 // GL Parametric Mesh Construction
 ////////////////////////////////////////////////////////////////////////////////
 
-function glCreateParametricVector3(func, in_u, in_v) {
+function computeNormal(func, u, v) {
+  const du = vector3Sub(func(u - 0.01, v), func(u + 0.01, v));
+  const dv = vector3Sub(func(u, v - 0.01), func(u, v + 0.01));
+  const t = vector3Normalize(vector3Cross(du, dv));
+  if (t[0] > 0.99 && t[1] > 0.99 && t[2] < 0.99) throw new Error("Oops");
+  return t;
+};
+
+function createParametricVecN(n, func, in_u, in_v) {
   const steps_u = in_u + 1;
   const steps_v = in_v + 1;
-  const vec = new Float32Array(3 * steps_u * steps_v);
+  const vec = new Float32Array(n * steps_u * steps_v);
   for (let v = 0; v < steps_v; ++v) {
     for (let u = 0; u < steps_u; ++u) {
-      const base = 3 * (u + v * steps_u);
+      const base = n * (u + v * steps_u);
       const point = func(u / in_u, v / in_v);
-      vec[base + 0] = point[0];
-      vec[base + 1] = point[1];
-      vec[base + 2] = point[2];
+      for (let i = 0; i < n; ++i) {
+        vec[base + i] = point[i];
+      }
     }
   }
-  const id = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, id);
-  gl.bufferData(gl.ARRAY_BUFFER, vec, gl.STATIC_DRAW);
-  return id;
+  return vec;  
 }
 
-function glCreateParametricTexcoord(in_u, in_v) {
-  const steps_u = in_u + 1;
-  const steps_v = in_v + 1;
-  const vec = new Float32Array(2 * steps_u * steps_v);
-  for (let v = 0; v < steps_v; ++v) {
-    for (let u = 0; u < steps_u; ++u) {
-      const base = 2 * (u + v * steps_u);
-      const point = [u / in_u, v / in_v];
-      vec[base + 0] = point[0];
-      vec[base + 1] = point[1];
-    }
-  }
-  const id = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, id);
-  gl.bufferData(gl.ARRAY_BUFFER, vec, gl.STATIC_DRAW);
-  return id;
-}
-
-function glCreateParametricIndices(func, in_u, in_v) {
+function createParametricIndices(in_u, in_v) {
   const steps_u = in_u + 1;
   const steps_v = in_v + 1;
   const vec = new Int16Array(2 * 3 * in_u * in_v);
@@ -54,29 +41,25 @@ function glCreateParametricIndices(func, in_u, in_v) {
       vec[base + 5] = (u + 1) + (v + 1) * steps_u;
     }
   }
+  return vec;
+}
+
+function glCreateStaticDrawBuffer(type, vec) {
   const id = gl.createBuffer();
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, id);
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, vec, gl.STATIC_DRAW);
+  gl.bindBuffer(type, id);
+  gl.bufferData(type, vec, gl.STATIC_DRAW);
   return id;
 }
 
-function computeNormal(func, u, v) {
-  const du = vector3Sub(func(u - 0.01, v), func(u + 0.01, v));
-  const dv = vector3Sub(func(u, v - 0.01), func(u, v + 0.01));
-  const t = vector3Normalize(vector3Cross(du, dv));
-  if (t[0] > 0.99 && t[1] > 0.99 && t[2] < 0.99) throw new Error("Oops");
-  return t;
-};
-
-function glCreateParametric(func, u, v) {
-  const norm = function(u2, v2) {
-    return computeNormal(func, u2, v2);
-  }
+function glCreateParametric(shape, u, v) {
+  //const norm = function(u2, v2) {
+  //  return computeNormal(func, u2, v2);
+  //}
   return {
-    id_vertex: glCreateParametricVector3(func, u, v),
-    id_normal: glCreateParametricVector3(norm, u, v),
-    id_texcoord: glCreateParametricTexcoord(u, v),
-    id_index: glCreateParametricIndices(func, u, v),
+    id_vertex: glCreateStaticDrawBuffer(gl.ARRAY_BUFFER, createParametricVecN(3, shape.Pos, u, v)),
+    id_normal: glCreateStaticDrawBuffer(gl.ARRAY_BUFFER, createParametricVecN(3, shape.Nor, u, v)),
+    id_texcoord: glCreateStaticDrawBuffer(gl.ARRAY_BUFFER, createParametricVecN(2, shape.UV0, u, v)),
+    id_index: glCreateStaticDrawBuffer(gl.ELEMENT_ARRAY_BUFFER, createParametricIndices(u, v)),
     triangle_count: 2 * u * v,
   };
 }

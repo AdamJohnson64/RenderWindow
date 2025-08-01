@@ -24,8 +24,9 @@ ctx.fillText("Texture", 128, 128);
 ///////////////////////////////////////////////////////////////////////////////
 // Create the default GLSL program from vertex and fragment shaders
 let glProgramDefault = glCompileProgram(glShaderVertex, glShaderFragment);
-const glMeshPlane = glCreateParametric(plane, 20, 20);
-const glMeshSphere = glCreateParametric(sphere, 20, 20);
+const glMeshPlane = glCreateParametric(getParametricPlane(), 20, 20);
+const glMeshSphere = glCreateParametric(getParametricSphere(), 20, 20);
+const glMeshTorus = glCreateParametric(getParametricTorus(10, 1), 50, 50);
 let frame = 0
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -75,6 +76,10 @@ function glRender() {
   setTransformModel(uniforms, matMultiply(matScale(5, 5, 5), matTranslate(0, 10, 0)));
   glSetUniforms(uniforms);
   glRenderMesh(glMeshSphere);
+  // Draw a torus
+  setTransformModel(uniforms, matTranslate(0, 1, 0));
+  glSetUniforms(uniforms);
+  glRenderMesh(glMeshTorus);
   // End Scene
   ////////////////////////////////////////
   frame = frame + 0.01;
@@ -102,4 +107,4 @@ codeedit_fragment.value = glShaderFragment;
 update();
 ///////////////////////////////////////////////////////////////////////////////
 
-setInterval(glRender, 1000 / 60);
+setInterval(glRender, 1000 / 30);

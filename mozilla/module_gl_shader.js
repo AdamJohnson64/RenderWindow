@@ -30,7 +30,7 @@ out highp vec4 FragColor;
 
 void main(void) {
   highp float dotL = clamp(dot(outNor, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);
-  highp float illumination = clamp(dotL + 0.5, 0.0, 1.0);
+  highp float illumination = clamp(dotL, 0.25, 1.0);
   FragColor = vec4(texture(Texture, outUV0).rgb * illumination, 1.0);
 }
 `;
