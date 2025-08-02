@@ -58,7 +58,7 @@ function glCreateParametric(shape, u, v) {
   return {
     id_vertex: glCreateStaticDrawBuffer(gl.ARRAY_BUFFER, createParametricVecN(3, shape.Pos, u, v)),
     id_normal: glCreateStaticDrawBuffer(gl.ARRAY_BUFFER, createParametricVecN(3, shape.Nor, u, v)),
-    id_texcoord: glCreateStaticDrawBuffer(gl.ARRAY_BUFFER, createParametricVecN(2, shape.UV0, u, v)),
+    id_texcoord: glCreateStaticDrawBuffer(gl.ARRAY_BUFFER, createParametricVecN(2, shape.ST0, u, v)),
     id_index: glCreateStaticDrawBuffer(gl.ELEMENT_ARRAY_BUFFER, createParametricIndices(u, v)),
     triangle_count: 2 * u * v,
   };

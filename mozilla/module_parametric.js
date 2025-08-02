@@ -39,13 +39,13 @@ function unitUV(u, v) {
 }
 
 function getParametricPlane() {
-  return { Pos : planePos, Nor : planeNor, UV0 : unitUV }
+  return { Pos : planePos, Nor : planeNor, ST0 : unitUV }
 }
 
 function getParametricSphere() {
-  return { Pos : sphere, Nor : sphere, UV0 : unitUV }
+  return { Pos : sphere, Nor : sphere, ST0 : unitUV }
 }
 
 function getParametricTorus(major, minor) {
-  return { Pos : torusPos(major, minor), Nor : torusNor, UV0 : unitUV }
+  return { Pos : torusPos(major, minor), Nor : torusNor, ST0 : unitUV }
 }

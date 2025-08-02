@@ -101,4 +101,12 @@ function glSetUniforms(program, uniforms) {
     const uniform = gl.getUniformLocation(program, "time");
     gl.uniform1f(uniform, time);
   }
+  {
+    const uniform = gl.getUniformLocation(program, "Albedo");
+    gl.uniform1i(uniform, 0);
+  }
+  {
+    const uniform = gl.getUniformLocation(program, "Height");
+    gl.uniform1i(uniform, 1);
+  }
 }

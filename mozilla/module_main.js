@@ -4,22 +4,71 @@ if (gl === null) {
 	throw new Error();
 }
 
-const canvasTexture = document.querySelector("#gl-texture");
-const ctx = canvasTexture.getContext("2d");
-ctx.fillStyle = "red";
-ctx.fillRect(0, 0, 256, 256);
-ctx.fillStyle = "green";
-ctx.fillRect(16, 16, 256 - 32, 256 - 32);
-ctx.fillStyle = "black";
-ctx.moveTo(0, 0);
-ctx.lineTo(256, 256);
-ctx.moveTo(256, 0);
-ctx.lineTo(0, 256);
-ctx.stroke();
-ctx.font = "bold 48px serif";
-ctx.textAlign = "center";
-ctx.textBaseline = "middle";
-ctx.fillText("Texture", 128, 128);
+const canvasAlbedo = document.querySelector("#gl-texture");
+{
+  const ctx = canvasAlbedo.getContext("2d");
+  ctx.fillStyle = "red";
+  ctx.fillRect(0, 0, 256, 256);
+  ctx.fillStyle = "green";
+  ctx.fillRect(16, 16, 256 - 32, 256 - 32);
+  ctx.fillStyle = "black";
+  for (x = 0; x < 256; x += 16) {
+    ctx.moveTo(0, x);
+    ctx.lineTo(256, x);
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, 256);
+  }
+  ctx.moveTo(0, 0);
+  ctx.lineTo(256, 256);
+  ctx.moveTo(256, 0);
+  ctx.lineTo(0, 256);
+  ctx.stroke();
+  ctx.font = "bold 48px serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("Texture", 128, 128);
+}
+
+function drawBlob(ctx, x, y, radius) {
+  gr = ctx.createRadialGradient(x, y, 0, x, y, radius);
+  gr.addColorStop(0, "#FFFFFF");
+  gr.addColorStop(1, "#000000");
+  oldStyle = ctx.fillStyle;
+  ctx.fillStyle = gr
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+  ctx.fill();
+  ctx,fillStyle = oldStyle;
+}
+
+function drawBoxBlob(ctx, size, inset, radius) {
+  drawBlob(ctx, inset, inset, radius);
+  drawBlob(ctx, size - inset, inset, radius);
+  drawBlob(ctx, inset, size - inset, radius);
+  drawBlob(ctx, size - inset, size - inset, radius);
+}
+
+const canvasHeight = document.querySelector("#gl-height");
+{
+  const ctx = canvasHeight.getContext("2d");
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, 256, 256);
+  /*
+  ctx.fillStyle = "white";
+  ctx.fillRect(16, 16, 256 - 32, 256 - 32);  
+  drawBlob(ctx, 128, 128, 128);
+  */
+  drawBoxBlob(ctx, 256, 32, 16);
+  drawBoxBlob(ctx, 256, 64, 16);
+  drawBoxBlob(ctx, 256, 96, 16);
+  /*
+  ctx.fillStyle = "black";
+  ctx.font = "bold 72px serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("Height", 128, 128);
+  */
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Create the default GLSL program from vertex and fragment shaders
@@ -36,10 +85,22 @@ const glMeshTorus = glCreateParametric(getParametricTorus(10, 1), 50, 50);
 let time = 0
 
 ///////////////////////////////////////////////////////////////////////////////
-// Create the texture from the HTML5 canvas element
-const glTextureDefault = gl.createTexture();
-gl.bindTexture(gl.TEXTURE_2D, glTextureDefault);
-gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvasTexture);
+// Create the albedo from the HTML5 canvas element
+const glTextureAlbedo = gl.createTexture();
+gl.activeTexture(gl.TEXTURE0);
+gl.bindTexture(gl.TEXTURE_2D, glTextureAlbedo);
+gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvasAlbedo);
+gl.generateMipmap(gl.TEXTURE_2D);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+// Create the height from the HTML5 canvas element
+const glTextureHeight = gl.createTexture();
+gl.activeTexture(gl.TEXTURE1);
+gl.bindTexture(gl.TEXTURE_2D, glTextureHeight);
+gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvasHeight);
 gl.generateMipmap(gl.TEXTURE_2D);
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);

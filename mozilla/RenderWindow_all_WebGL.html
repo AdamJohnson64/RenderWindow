@@ -2,24 +2,27 @@
 <html>
 <body>
 
-  <!-- Horizontal stack of viewer + code stack -->
   <div style="display:flex; flex-direction:row;">
-    <!-- Vertical stack of view/code + errors -->
     <div style="display:flex; flex-direction:column;">
       <canvas id="gl-canvas" width="640" height="512">
         Your browser does not support the HTML5 canvas element.
       </canvas>
-      <canvas id="gl-texture" style="width:256px; height:256px;" width="256" height="256">
-        Your browser does not support the HTML5 canvas element.
-      </canvas>
+      <div style="display:flex; flex-direction:row">
+        <canvas id="gl-texture" style="width:256px; height:256px;" width="256" height="256">
+          Your browser does not support the HTML5 canvas element.
+        </canvas>
+        <canvas id="gl-height" style="width:256px; height:256px;" width="256" height="256">
+          Your browser does not support the HTML5 canvas element.
+        </canvas>
+      </div>
     </div>
-    <!-- Vertical stack of code editors -->
     <div style="display:flex; flex-direction:column;">
       <textarea id="gl-vertexshader" style="resize:none;" cols=80 rows=15></textarea>
       <textarea id="gl-fragmentshader" style="resize:none;" cols=80 rows=15></textarea>
       <textarea id="gl-error" style="resize:none;" cols=80 rows=10></textarea>
     </div>
   </div>
+
   <script src="module_gl_matrix.js"/></script>
   <script src="module_gl_mesh.js"/></script>
   <script src="module_gl_parametric.js"/></script>
