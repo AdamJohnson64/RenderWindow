@@ -12,6 +12,7 @@ uniform mat4 projection;
 uniform mat4 modelview;
 uniform mat4 viewprojection;
 uniform mat4 modelviewprojection;
+uniform vec3 eye;
 uniform float time;
 
 void main(void) {
@@ -25,15 +26,23 @@ const glShaderFragment = `#version 300 es
 in highp vec3 outPos;
 in highp vec3 outNor;
 in highp vec2 outUV0;
+out highp vec4 outCol;
+
+uniform highp mat4 model;
+uniform highp mat4 view;
+uniform highp mat4 projection;
+uniform highp mat4 modelview;
+uniform highp mat4 viewprojection;
+uniform highp mat4 modelviewprojection;
+uniform highp vec3 eye;
+uniform highp float time;
 
 uniform sampler2D Texture;
-
-out highp vec4 FragColor;
 
 void main(void) {
   highp float dotL = clamp(dot(outNor, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);
   highp float illumination = clamp(dotL, 0.25, 1.0);
-  FragColor = vec4(texture(Texture, outUV0).rgb * illumination, 1.0);
+  outCol = vec4(texture(Texture, outUV0).rgb * illumination, 1.0);
 }`;
 
 const glShaderFragmentBitangent = `#version 300 es

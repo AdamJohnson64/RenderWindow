@@ -311,6 +311,23 @@ class MatrixElement:
         return f"{self.name}[{self.i}][{self.j}]"
 
 
+class FlatMatrixElement:
+    """Represents a symbolic matrix element using flat indexing."""
+
+    def __init__(self, i: int, j: int, size: int, name: str = "n"):
+        self.name = name
+        self.i = i
+        self.j = j
+        self.size = size
+        self.flat_index = i * size + j
+
+    def __str__(self):
+        return f"{self.name}[{self.flat_index}]"
+
+    def __repr__(self):
+        return f"{self.name}[{self.flat_index}]"
+
+
 # =============================================================================
 # Simplification-Related Functions (lexicographically ordered)
 # =============================================================================
@@ -573,7 +590,7 @@ def _simplify_expr(node: Any) -> Any:
     """
     Simplify a scalar or symbolic expression node using algebraic properties.
     """
-    if isinstance(node, MatrixElement):
+    if isinstance(node, (MatrixElement, FlatMatrixElement)):
         return node
     if isinstance(node, (int, float)):
         return node
@@ -849,6 +866,11 @@ def mat_print(m: List[List]) -> None:
         print(" ".join(str(elem) for elem in row))
 
 
+def mat_lines(m: List[List]) -> None:
+    for row in m:
+        for elem in row:
+            print(str(elem))
+
 def mat_smart_print(m: List[List]) -> None:
     """Print a matrix to the console using smart formatting for expressions."""
     for row in m:
@@ -917,13 +939,22 @@ def mat_transpose(m: List[List]) -> List[List]:
     return result
 
 
-def mat_symbolic(size: int) -> List[List]:
-    """Create a symbolic matrix of given size with MatrixElement objects."""
+def mat_symbolic(size: int, flat: bool = False) -> List[List]:
+    """Create a symbolic matrix of given size with MatrixElement objects.
+    
+    Args:
+        size: The size of the square matrix
+        flat: If True, use FlatMatrixElement objects with flat indexing
+              If False, use MatrixElement objects with 2D indexing
+    """
     matrix = []
     for i in range(size):
         row = []
         for j in range(size):
-            row.append(MatrixElement(i, j))
+            if flat:
+                row.append(FlatMatrixElement(i, j, size))
+            else:
+                row.append(MatrixElement(i, j))
         matrix.append(row)
     return matrix
 
@@ -973,7 +1004,7 @@ def _needs_parentheses(node, parent_operator_type=None) -> bool:
 
 def _smart_str(node, parent_operator_type=None) -> str:
     """Convert a node to string with minimal parentheses based on precedence."""
-    if isinstance(node, MatrixElement):
+    if isinstance(node, (MatrixElement, FlatMatrixElement)):
         return str(node)
     elif isinstance(node, (int, float)):
         return str(node)
@@ -1693,6 +1724,68 @@ def test_smart_print():
     matrix = [[Add(A, B), Multiply(A, 2)], [Subtract(B, A), Divide(A, B)]]
     print(f"Matrix with smart printing:")
     mat_smart_print(matrix)
+    
+    return True
+
+
+@decorate_test
+def test_flat_matrix_elements():
+    """Test the new FlatMatrixElement functionality."""
+    # Test 2x2 matrix with flat indexing
+    flat_matrix_2x2 = mat_symbolic(2, flat=True)
+    print(f"2x2 flat matrix: {flat_matrix_2x2}")
+    print("Flat matrix elements:")
+    for i in range(2):
+        for j in range(2):
+            element = flat_matrix_2x2[i][j]
+            print(f"  Position ({i},{j}) -> {element} (flat index: {element.flat_index})")
+    
+    # Test 3x3 matrix with flat indexing
+    flat_matrix_3x3 = mat_symbolic(3, flat=True)
+    print(f"\n3x3 flat matrix: {flat_matrix_3x3}")
+    print("Flat matrix elements:")
+    for i in range(3):
+        for j in range(3):
+            element = flat_matrix_3x3[i][j]
+            print(f"  Position ({i},{j}) -> {element} (flat index: {element.flat_index})")
+    
+    # Test 4x4 matrix with flat indexing
+    flat_matrix_4x4 = mat_symbolic(4, flat=True)
+    print(f"\n4x4 flat matrix: {flat_matrix_4x4}")
+    print("Flat matrix elements:")
+    for i in range(4):
+        for j in range(4):
+            element = flat_matrix_4x4[i][j]
+            print(f"  Position ({i},{j}) -> {element} (flat index: {element.flat_index})")
+    
+    # Test that flat indexing works correctly
+    # For 4x4 matrix: (i,j) -> i*4 + j
+    expected_flat_indices_4x4 = [
+        [0, 1, 2, 3],    # row 0: 0*4 + 0, 0*4 + 1, 0*4 + 2, 0*4 + 3
+        [4, 5, 6, 7],    # row 1: 1*4 + 0, 1*4 + 1, 1*4 + 2, 1*4 + 3
+        [8, 9, 10, 11],  # row 2: 2*4 + 0, 2*4 + 1, 2*4 + 2, 2*4 + 3
+        [12, 13, 14, 15] # row 3: 3*4 + 0, 3*4 + 1, 3*4 + 2, 3*4 + 3
+    ]
+    
+    for i in range(4):
+        for j in range(4):
+            element = flat_matrix_4x4[i][j]
+            expected = expected_flat_indices_4x4[i][j]
+            assert element.flat_index == expected, f"Expected {expected}, got {element.flat_index} for position ({i},{j})"
+    
+    # Test smart printing with flat elements
+    A_flat = FlatMatrixElement(0, 0, 4, "n")
+    B_flat = FlatMatrixElement(1, 1, 4, "n")
+    expr_flat = Add(Multiply(A_flat, 2), Multiply(B_flat, 3))
+    print(f"\nFlat expression: {expr_flat}")
+    print(f"Smart print: ", end="")
+    smart_print(expr_flat)
+    # Should print: n[0]*2 + n[5]*3
+    
+    # Test matrix operations with flat elements
+    flat_matrix = mat_symbolic(2, flat=True)
+    print(f"\nFlat matrix for operations: {flat_matrix}")
+    mat_smart_print(flat_matrix)
     
     return True
 

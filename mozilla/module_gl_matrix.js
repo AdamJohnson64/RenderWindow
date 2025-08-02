@@ -59,13 +59,6 @@ function getTransformModelViewProjection(uniforms) {
     matMultiply(getTransformModel(uniforms), getTransformViewProjection(uniforms));
 }
 
-function getUniformTime(uniforms) {
-  if (uniforms.time == undefined) {
-    throw "Time not set.";
-  }
-  return uniforms.time;
-}
-
 function setTransformModel(uniforms, model) {
   uniforms.model = model;
   uniforms.modelview = undefined;
@@ -85,10 +78,6 @@ function setTransformProjection(uniforms, projection) {
   uniforms.modelviewprojection = undefined;
 }
 
-function setUniformTime(uniforms, time) {
-  uniforms.time = time;
-}
-
 function glSetMatrix(program, name, matrix) {
     const uniform = gl.getUniformLocation(program, name);
     gl.uniformMatrix4fv(uniform, gl.TRUE, matrix);
@@ -103,6 +92,13 @@ function glSetUniforms(program, uniforms) {
   glSetMatrix(program, "modelview", getTransformModelView(uniforms));
   glSetMatrix(program, "viewprojection", getTransformViewProjection(uniforms));
   glSetMatrix(program, "modelviewprojection", getTransformModelViewProjection(uniforms));
-  const uniform = gl.getUniformLocation(glProgramDefault, "time");
-  gl.uniform1f(uniform, getUniformTime(uniforms));
+  {
+    const uniform = gl.getUniformLocation(program, "eye");
+    const invview = matInvert(getTransformView(uniforms));
+    gl.uniform3f(uniform, invview[12], invview[13], invview[14]);
+  }
+  {
+    const uniform = gl.getUniformLocation(program, "time");
+    gl.uniform1f(uniform, time);
+  }
 }

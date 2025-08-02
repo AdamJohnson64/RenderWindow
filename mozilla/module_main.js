@@ -33,7 +33,7 @@ let glProgramTangent   = glCompileProgram(glShaderVertex, glShaderFragmentTangen
 const glMeshPlane = glCreateParametric(getParametricPlane(), 20, 20);
 const glMeshSphere = glCreateParametric(getParametricSphere(), 20, 20);
 const glMeshTorus = glCreateParametric(getParametricTorus(10, 1), 50, 50);
-let frame = 0
+let time = 0
 
 ///////////////////////////////////////////////////////////////////////////////
 // Create the texture from the HTML5 canvas element
@@ -51,9 +51,8 @@ function glRenderScene(program) {
   // Begin scene
   gl.useProgram(program);
   let uniforms = getTransformEmpty();
-  setUniformTime(uniforms, frame);
   setTransformProjection(uniforms, matProjection(90, 0.001, 100.0));
-  setTransformView(uniforms, matLookAt([25 * Math.cos(frame), 10 * (1 - Math.cos(frame * 0.2)), 10 * Math.sin(frame)],[0,0,0],[0,1,0]));
+  setTransformView(uniforms, matLookAt([25 * Math.cos(time), 10 * (1 - Math.cos(time * 0.2)), 10 * Math.sin(time)],[0,0,0],[0,1,0]));
   // Draw a plane
   {
     setTransformModel(uniforms, matMultiply(matScale(50, 1, 50), matTranslate(0, -6, 0)));
@@ -97,21 +96,23 @@ function glRenderCanvas() {
   glRenderScene(glProgramDefault);
 
   // Render debug view 1 (Tangent)
-  gl.viewport(512, 256, 256, 256);
+  gl.viewport(512, 384, 128, 128);
   glRenderScene(glProgramTangent);
 
   // Render debug view 2 (Bitngent)
-  gl.viewport(768, 256, 256, 256);
+  gl.viewport(512, 256, 128, 128);
   glRenderScene(glProgramBitangent);
 
   // Render debug view 3 (Normal)
-  gl.viewport(512, 0, 256, 256);
+  gl.viewport(512, 128, 128, 128);
   glRenderScene(glProgramNormal);
-  frame = frame + 0.01;
 
   // Render debug view 4 (Default)
-  gl.viewport(768, 0, 256, 256);
+  gl.viewport(512, 0, 128, 128);
   glRenderScene(glProgramDefault);
+
+  // Advance time for the next frame
+  time = time + 0.01;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
