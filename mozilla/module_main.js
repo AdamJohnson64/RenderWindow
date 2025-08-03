@@ -61,6 +61,10 @@ const canvasHeight = document.querySelector("#gl-height");
   drawBoxBlob(ctx, 256, 32, 16);
   drawBoxBlob(ctx, 256, 64, 16);
   drawBoxBlob(ctx, 256, 96, 16);
+  drawBlob(ctx, 128, 48, 32);
+  drawBlob(ctx, 128, 256 - 48, 32);
+  drawBlob(ctx, 48, 128, 32);
+  drawBlob(ctx, 256 - 48, 128, 32);
   /*
   ctx.fillStyle = "black";
   ctx.font = "bold 72px serif";
