@@ -1,34 +1,29 @@
 import math
+import glfw
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
-from OpenGL.GLUT import *
 
 from module_parametric import *
 from module_gl_parametric import *
 
-###############################################################################
-# OpenGL Primary Initialization
-###############################################################################
-
-glutInit()
-glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH)
-glutInitWindowSize(500, 500)
-glutInitWindowPosition(0, 0)
-window = glutCreateWindow("RenderWindow")
-# Enable the Z-Buffer
-glEnable(GL_DEPTH_TEST)
-glDepthFunc(GL_LESS)
+glfw.init()
+window = glfw.create_window(500, 500, "Render Window", None, None)
+glfw.set_window_pos(window, 100, 100) 
+glfw.make_context_current(window)
 
 plane = glCreateParametric(100, 100, getParametricPlane())
 sphere = glCreateParametric(100, 100, getParametricSphere())
 torus = glCreateParametric(100, 100, getParametricTorus(10, 1))
 
+# Enable the Z-Buffer
+glEnable(GL_DEPTH_TEST)
+glDepthFunc(GL_LESS)
+
 time = 0
 
-# Draw OpenGL frame (clear, drawcalls)
-def showScreen() -> None:
-   global time
+while not glfw.window_should_close(window):
+   glfw.poll_events()
    # Clear the color and depth buffers
    glClearColor(0,0,1,1)
    glClearDepth(1)
@@ -70,12 +65,5 @@ def showScreen() -> None:
    # End Scene
    ########################################
    # Show the backbuffer
-   glutSwapBuffers()
    time = time + 0.01
-
-###############################################################################
-# OpenGL Display Finalization (draw call, window loop)
-###############################################################################
-glutDisplayFunc(showScreen)
-glutIdleFunc(showScreen)
-glutMainLoop()
+   glfw.swap_buffers(window)
