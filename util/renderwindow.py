@@ -1,6 +1,7 @@
 import math
 import numpy
 from OpenGL.GL import *
+from OpenGL.GLU import *
 from OpenGL.GLUT import *
 
 ###############################################################################
@@ -72,20 +73,38 @@ glBindBuffer(GL_ARRAY_BUFFER, mesh[1]);
 glBufferData(GL_ARRAY_BUFFER, 2 * idx.size, idx, GL_STATIC_DRAW)
 #glBufferData(GL_ARRAY_BUFFER, 6, numpy.array([0, 1, 2], dtype=numpy.uint16), GL_STATIC_DRAW)
 
+time = 0
+
 # Draw OpenGL frame (clear, drawcalls)
 def showScreen():
-    # Clear the color and depth buffers
-    glClearColor(0,0,1,1)
-    glClearDepth(1)
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    # Draw some content
-    glBindBuffer(GL_ARRAY_BUFFER, mesh[0])
-    glEnableVertexAttribArray(0)
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 12, ctypes.c_void_p(0))
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh[1])
-    glDrawElements(GL_TRIANGLES, idx.size, GL_UNSIGNED_SHORT, ctypes.c_void_p(0))
-    # Show the backbuffer
-    glutSwapBuffers()
+   global time
+   # Clear the color and depth buffers
+   glClearColor(0,0,1,1)
+   glClearDepth(1)
+   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+   # Set up the transform stack
+   glMatrixMode(GL_PROJECTION)
+   glLoadIdentity()
+   gluPerspective(90, 1, 0.001, 1000.0)
+   glMatrixMode(GL_MODELVIEW)
+   glLoadIdentity()
+   #setTransformView(uniforms, matLookAt([25 * Math.cos(time), 10 * (1 - Math.cos(time * 0.2)), 10 * Math.sin(time)],[0,0,0],[0,1,0]));
+   gluLookAt(25 * math.cos(time), 10 * (1 - math.cos(time * 0.2)), 10 * math.sin(time),  0, 0, 0,  0, 1, 0)
+   # Draw some content
+   for z in range(-5, 6, 2):
+      for y in range(-5, 6, 2):
+         for x in range(-5, 6, 2):
+            glPushMatrix()
+            glTranslate(x, y, z)
+            glBindBuffer(GL_ARRAY_BUFFER, mesh[0])
+            glEnableVertexAttribArray(0)
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 12, ctypes.c_void_p(0))
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh[1])
+            glDrawElements(GL_TRIANGLES, idx.size, GL_UNSIGNED_SHORT, ctypes.c_void_p(0))
+            glPopMatrix()
+   # Show the backbuffer
+   glutSwapBuffers()
+   time = time + 0.01
 
 ###############################################################################
 # OpenGL Display Finalization (draw call, window loop)
