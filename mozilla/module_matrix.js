@@ -1,4 +1,7 @@
+
+////////////////////////////////////////////////////////////////////////////////
 // Linear algebra and matrix utilities for 3D graphics
+////////////////////////////////////////////////////////////////////////////////
 
 function matCreate() {
   // Return a new identity matrix as a flat array
@@ -47,20 +50,6 @@ function matInvert(n) {
   return inv;
 }
 
-function matLookAt(eye, center, up) {
-  // Standard right-handed lookAt matrix
-  const f = vector3Normalize(vector3Sub(center, eye)); // forward
-  const s = vector3Normalize(vector3Cross(f, up));     // right (side)
-  const u = vector3Cross(s, f);                        // up
-
-  return new Float32Array([
-    s[0],  u[0],  -f[0],  0,
-    s[1],  u[1],  -f[1],  0,
-    s[2],  u[2],  -f[2],  0,
-    -vector3Dot(s, eye), -vector3Dot(u, eye), vector3Dot(f, eye), 1
-  ]);
-}
-
 function matMultiply(a, b) {
   // a, b are flat 16-element arrays
   const r = new Float32Array(16);
@@ -73,6 +62,72 @@ function matMultiply(a, b) {
     }
   }
   return r;
+}
+
+function matTranspose(m) {
+  const r = new Float32Array(16);
+  for (let i = 0; i < 4; ++i) {
+    for (let j = 0; j < 4; ++j) {
+      r[i * 4 + j] = m[j * 4 + i];
+    }
+  }
+  return r;
+}
+
+// Vector utilities
+function vector3String(v) {
+  return `[${v[0].toFixed(2)}, ${v[1].toFixed(2)}, ${v[2].toFixed(2)}]`;
+}
+
+function vector3Add(a, b) {
+  return [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+}
+
+function vector3Sub(a, b) {
+  return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+}
+
+function vector3Mul(a, s) {
+  return [a[0] * s, a[1] * s, a[2] * s];
+}
+
+function vector3Dot(a, b) {
+  return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+}
+
+function vector3Cross(a, b) {
+  return [
+    a[1] * b[2] - a[2] * b[1],
+    a[2] * b[0] - a[0] * b[2],
+    a[0] * b[1] - a[1] * b[0]
+  ];
+}
+
+function vector3Negate(a) {
+  return [-a[0], -a[1], -a[2]];
+}
+
+function vector3Normalize(a) {
+  const invMag = 1.0 / Math.sqrt(vector3Dot(a, a));
+  return vector3Mul(a, invMag);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Standard Matrices
+////////////////////////////////////////////////////////////////////////////////
+
+function matLookAt(eye, center, up) {
+  // Standard right-handed lookAt matrix
+  const f = vector3Normalize(vector3Sub(center, eye)); // forward
+  const s = vector3Normalize(vector3Cross(f, up));     // right (side)
+  const u = vector3Cross(s, f);                        // up
+
+  return new Float32Array([
+    s[0],  u[0],  -f[0],  0,
+    s[1],  u[1],  -f[1],  0,
+    s[2],  u[2],  -f[2],  0,
+    -vector3Dot(s, eye), -vector3Dot(u, eye), vector3Dot(f, eye), 1
+  ]);
 }
 
 function matProjection(fov, near, far) {
@@ -152,52 +207,4 @@ function matTranslate(x, y, z) {
   m[13] = y;
   m[14] = z;
   return m;
-}
-
-function matTranspose(m) {
-  const r = new Float32Array(16);
-  for (let i = 0; i < 4; ++i) {
-    for (let j = 0; j < 4; ++j) {
-      r[i * 4 + j] = m[j * 4 + i];
-    }
-  }
-  return r;
-}
-
-// Vector utilities
-function vector3String(v) {
-  return `[${v[0].toFixed(2)}, ${v[1].toFixed(2)}, ${v[2].toFixed(2)}]`;
-}
-
-function vector3Add(a, b) {
-  return [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
-}
-
-function vector3Sub(a, b) {
-  return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
-}
-
-function vector3Mul(a, s) {
-  return [a[0] * s, a[1] * s, a[2] * s];
-}
-
-function vector3Dot(a, b) {
-  return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-}
-
-function vector3Cross(a, b) {
-  return [
-    a[1] * b[2] - a[2] * b[1],
-    a[2] * b[0] - a[0] * b[2],
-    a[0] * b[1] - a[1] * b[0]
-  ];
-}
-
-function vector3Negate(a) {
-  return [-a[0], -a[1], -a[2]];
-}
-
-function vector3Normalize(a) {
-  const invMag = 1.0 / Math.sqrt(vector3Dot(a, a));
-  return vector3Mul(a, invMag);
 }
